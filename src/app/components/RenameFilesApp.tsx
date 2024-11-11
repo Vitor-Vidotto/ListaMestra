@@ -2,11 +2,7 @@
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
 
-type RenameFilesAppProps = {
-  goBack: () => void;
-};
-
-const RenameFilesApp: React.FC<RenameFilesAppProps> = ({ goBack }) => {
+const RenameFilesApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação
   const [directory, setDirectory] = useState(""); // Estado para armazenar o diretório
   const [selectedExtensions, setSelectedExtensions] = useState<string[]>([]); // Estado para armazenar as extensões selecionadas
@@ -26,13 +22,13 @@ const RenameFilesApp: React.FC<RenameFilesAppProps> = ({ goBack }) => {
     }
 
     try {
-      const result = await invoke("rename_files_in_directory", {
+      const result = await invoke<string>("rename_files_in_directory", {
         directory,
         extensions: selectedExtensions,
       });
       setRenameMsg(result); // Define o conteúdo para a mensagem de renomeação
     } catch (error) {
-      setRenameMsg("Erro ao renomear arquivos: " + error);
+      setRenameMsg("Erro ao renomear arquivos: " + (error instanceof Error ? error.message : String(error)));
     }
   }
 
