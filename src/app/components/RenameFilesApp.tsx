@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
+import { open } from "@tauri-apps/plugin-dialog";
 import GoBackButton from "./GoBackButton";
 
 const RenameFilesApp: React.FC = () => {
@@ -35,7 +36,16 @@ const RenameFilesApp: React.FC = () => {
   async function goBack() {
     window.history.back()
   }
-
+  const selectDirectory = async () => {
+    try {
+      const dir = await open({ multiple: false, directory: true }); // Definindo 'directory' como true para permitir a seleção de pastas
+      if (dir) {
+        setDirectory(dir as string); // Definindo o diretório selecionado no estado
+      }
+    } catch (error) {
+      setRenameMsg("Erro ao abrir o seletor de diretórios: " + (error instanceof Error ? error.message : String(error)));
+    }
+  };
   // Função para lidar com a seleção/deseleção de extensões
   const handleExtensionChange = (ext: string) => {
     setSelectedExtensions((prev) => {
@@ -53,9 +63,10 @@ const RenameFilesApp: React.FC = () => {
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Arquivos</h3>
         
         <div className="mb-4">
-          <label htmlFor="directory-input" className="block text-lg font-medium text-gray-700">
+          <label htmlFor="directory-input" className="block min-w-96 text-lg font-medium text-gray-900">
             Caminho do Diretório:
           </label>
+          <div className="flex">
           <input
             id="directory-input"
             type="text"
@@ -64,10 +75,17 @@ const RenameFilesApp: React.FC = () => {
             placeholder="Digite o caminho do diretório..."
             className="w-full mt-2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+              onClick={selectDirectory}
+              className="ml-2 px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none"
+            >
+              ...
+            </button>
+        </div>
         </div>
         
         <div className="mb-6">
-          <h4 className="text-lg font-medium text-gray-700 mb-2">Selecione as Extensões para Renomear:</h4>
+          <h4 className="text-lg font-medium text-gray-900 mb-2">Selecione as Extensões para Renomear:</h4>
           <div className="grid grid-cols-2 gap-4">
             {extensions.map((ext) => (
               <label key={ext} className="flex items-center space-x-2">
@@ -77,7 +95,7 @@ const RenameFilesApp: React.FC = () => {
                   onChange={() => handleExtensionChange(ext)}
                   className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded"
                 />
-                <span className="text-gray-700 capitalize">{ext.toUpperCase()}</span>
+                <span className="text-gray-900 capitalize">{ext.toUpperCase()}</span>
               </label>
             ))}
           </div>
