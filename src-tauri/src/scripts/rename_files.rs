@@ -2,7 +2,10 @@ use std::fs;
 use std::path::Path;
 
 #[tauri::command]
-pub fn rename_files_in_directory(directory: String, extensions: Vec<String>) -> Result<String, String> {
+pub fn rename_files_in_directory(
+    directory: String,
+    extensions: Vec<String>,
+) -> Result<String, String> {
     let dir_path = Path::new(&directory);
 
     // Verifica se o diretório existe
@@ -14,7 +17,10 @@ pub fn rename_files_in_directory(directory: String, extensions: Vec<String>) -> 
     let mut renamed_files = Vec::new();
     for entry in fs::read_dir(dir_path).map_err(|_| "Falha ao ler o diretório.")? {
         let entry = entry.map_err(|_| "Falha ao acessar o arquivo.")?;
-        let filename = entry.file_name().into_string().map_err(|_| "Nome do arquivo inválido.")?;
+        let filename = entry
+            .file_name()
+            .into_string()
+            .map_err(|_| "Nome do arquivo inválido.")?;
 
         // Verifica se o arquivo tem uma das extensões escolhidas
         if let Some(extension) = filename.rsplit('.').next() {
@@ -34,7 +40,11 @@ pub fn rename_files_in_directory(directory: String, extensions: Vec<String>) -> 
 
                 // Renomeia o arquivo
                 fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?;
-                renamed_files.push(format!("Renomeado: {} -> {}", filename, new_filename.clone()));
+                renamed_files.push(format!(
+                    "Renomeado: {} -> {}",
+                    filename,
+                    new_filename.clone()
+                ));
             }
         }
     }
