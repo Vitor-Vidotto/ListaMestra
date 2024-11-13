@@ -1,6 +1,4 @@
 "use client"
-import Image from "next/image";
-import App from "../components/App";
 import Navbar from "../components/NavBar";
 import RenameFilesApp from "../components/RenameFilesApp";
 
