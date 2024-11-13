@@ -1,14 +1,20 @@
-mod scripts;  // Importa o módulo scripts
-
 use tauri::{Manager, Window};  // Importa as dependências necessárias
+use std::sync::{Arc, Mutex};   // Para controlar o estado de execução
 
-// Importa o módulo rename_files do scripts
-use scripts::rename_files; 
+// Criamos uma variável estática para controlar se o close_splashscreen foi executado
+lazy_static::lazy_static! {
+    static ref SPLASHSCREEN_CLOSED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+}
 
-// Função para fechar a splashscreen e abrir o app principal
 #[tauri::command]
 async fn close_splashscreen(window: Window) {
-    // Acessa a WebView da janela splashscreen
+    // Verifica se o comando já foi executado
+    let mut closed = SPLASHSCREEN_CLOSED.lock().unwrap();
+    if *closed {
+        return;  // Se já foi fechado, não faz nada
+    }
+
+    // Caso contrário, fecha a splashscreen
     let splashscreen = window.get_webview_window("splashscreen")
         .expect("Não foi possível encontrar a janela de splashscreen");
 
@@ -19,12 +25,14 @@ async fn close_splashscreen(window: Window) {
         .expect("Não foi possível encontrar a janela principal");
 
     listamestra.show().unwrap(); // Torna a janela principal visível
+
+    // Marca a splashscreen como fechada
+    *closed = true;
 }
 
 fn main() {
     tauri::Builder::default()
-        // Registra o comando para renomeação e o fechamento da splashscreen
-        .invoke_handler(tauri::generate_handler![rename_files::rename_files_in_directory, close_splashscreen]) 
+        .invoke_handler(tauri::generate_handler![close_splashscreen]) // Registra o comando
         .run(tauri::generate_context!()) // Executa o aplicativo Tauri
         .expect("Erro ao rodar o app");
 }
