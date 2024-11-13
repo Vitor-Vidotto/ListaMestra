@@ -3,19 +3,15 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const appLinks = [
-  { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/simuladores.png" },
-  { title: "Editores", path: "/editores", imageUrl: "/images/simuladores.png" },
-  { title: "Verificadores", path: "/verificadores", imageUrl: "/images/simuladores.png" },
-  { title: "Compiladores", path: "/compiladores", imageUrl: "/images/simuladores.png" },
-  { title: "Analisadores", path: "/analisadores", imageUrl: "/images/simuladores.png" },
-  { title: "Simuladores", path: "/simuladores", imageUrl: "/images/simuladores.png" },
+  { title: "Renomeador de Fase", path: "/renomeadores/stages", imageUrl: "/images/simuladores.png" },
+  { title: "Renomeador de Arquivo", path: "/renomeadores/files", imageUrl: "/images/simuladores.png" },
 ];
 
-const AppLinksGrid = () => {
+const RenameLinkGrid = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <nav className="w-full text-center p-8">
-      <h1 className="text-3xl font-bold mb-4">Lista Mestra</h1>
+      <h1 className="text-3xl font-bold mb-4">Renomeadores</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8 mx-auto" style={{ width: '600px'}}>
           {appLinks.map((app, index) => (
             <Link
@@ -37,4 +33,4 @@ const AppLinksGrid = () => {
 
 
 
-export default AppLinksGrid;
+export default RenameLinkGrid;

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
+import GoBackButton from "./GoBackButton";
 
 const RenameStagesApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação
@@ -107,6 +108,7 @@ const RenameStagesApp: React.FC = () => {
         <div className="mt-4 text-center">
           {renameMsg && <p className="text-gray-900">{renameMsg}</p>}
         </div>
+        <GoBackButton />
       </div>
     </div>
   );

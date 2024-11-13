@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
+import GoBackButton from "./GoBackButton";
 
 const RenameFilesApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação
@@ -30,6 +31,9 @@ const RenameFilesApp: React.FC = () => {
     } catch (error) {
       setRenameMsg("Erro ao renomear arquivos: " + (error instanceof Error ? error.message : String(error)));
     }
+  }
+  async function goBack() {
+    window.history.back()
   }
 
   // Função para lidar com a seleção/deseleção de extensões
@@ -91,6 +95,7 @@ const RenameFilesApp: React.FC = () => {
         <div className="mt-4 text-center">
           {renameMsg && <p className="text-gray-900">{renameMsg}</p>}
         </div>
+        <GoBackButton />
       </div>
     </div>
   );
