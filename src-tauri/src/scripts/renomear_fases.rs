@@ -3,7 +3,11 @@ use std::path::Path;
 use tauri::command;
 
 #[command]
-pub fn renomear_fases(diretorio: String, sigla_antiga: String, sigla_nova: String) -> Result<String, String> {
+pub fn renomear_fases(
+    diretorio: String,
+    sigla_antiga: String,
+    sigla_nova: String,
+) -> Result<String, String> {
     let diretorio_path = Path::new(&diretorio);
 
     // Verificar se o diretório existe

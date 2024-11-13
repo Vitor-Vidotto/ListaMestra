@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
+import { open } from "@tauri-apps/plugin-dialog"; // Importando o método 'open' do plugin Dialog
 import GoBackButton from "./GoBackButton";
 
 const RenameStagesApp: React.FC = () => {
@@ -10,6 +11,18 @@ const RenameStagesApp: React.FC = () => {
   const [selectedSiglaNova, setSelectedSiglaNova] = useState<string>(""); // Estado para a sigla nova
 
   const siglas = ["EP", "AP", "PE", "EX", "LO"]; // Lista de siglas disponíveis
+
+  // Função para abrir o seletor de diretórios
+  const selectDirectory = async () => {
+    try {
+      const dir = await open({ multiple: false, directory: true }); // Definindo 'directory' como true para permitir a seleção de pastas
+      if (dir) {
+        setDirectory(dir as string); // Definindo o diretório selecionado no estado
+      }
+    } catch (error) {
+      setRenameMsg("Erro ao abrir o seletor de diretórios: " + (error instanceof Error ? error.message : String(error)));
+    }
+  };
 
   // Função para chamar o comando de renomeação de arquivos
   async function renameFiles() {
@@ -45,17 +58,25 @@ const RenameStagesApp: React.FC = () => {
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Fases</h3>
 
         <div className="mb-4">
-          <label htmlFor="directory-input" className="block text-lg font-medium text-gray-700">
+          <label htmlFor="directory-input" className="block min-w-96 text-lg font-medium text-gray-900">
             Caminho do Diretório:
           </label>
-          <input
-            id="directory-input"
-            type="text"
-            value={directory}
-            onChange={(e) => setDirectory(e.currentTarget.value)}
-            placeholder="Digite o caminho do diretório..."
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="flex">
+            <input
+              id="directory-input"
+              type="text"
+              value={directory}
+              onChange={(e) => setDirectory(e.currentTarget.value)}
+              placeholder="Digite o caminho do diretório..."
+              className="w-full mt-2 p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={selectDirectory}
+              className="ml-2 px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none"
+            >
+              ...
+            </button>
+          </div>
         </div>
 
         <div className="mb-4">
@@ -66,7 +87,7 @@ const RenameStagesApp: React.FC = () => {
             id="sigla-antiga"
             value={selectedSiglaAntiga}
             onChange={(e) => setSelectedSiglaAntiga(e.target.value)}
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mt-2 p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Selecione uma sigla antiga</option>
             {siglas.map((sigla) => (
@@ -78,14 +99,14 @@ const RenameStagesApp: React.FC = () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="sigla-nova" className="block text-lg font-medium text-gray-700">
+          <label htmlFor="sigla-nova" className="block text-lg font-medium text-gray-900">
             Sigla Nova:
           </label>
           <select
             id="sigla-nova"
             value={selectedSiglaNova}
             onChange={(e) => setSelectedSiglaNova(e.target.value)}
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full mt-2 p-3 border border-gray-300 text-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Selecione uma nova sigla</option>
             {siglas.map((sigla) => (
