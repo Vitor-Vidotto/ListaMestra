@@ -4,7 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import Image from "next/image";
 import App from "./components/App";
 import Navbar from "./components/NavBar";
-import CloseSplashscreen from "./components/CloseSplashscreen";
 
 export default function Home() {
   useEffect(() => {
@@ -27,7 +26,6 @@ export default function Home() {
       <Navbar />
       <div>
       <App />
-      <CloseSplashscreen />
       </div>
       </main>
     </div>
