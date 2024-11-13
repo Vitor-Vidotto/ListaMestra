@@ -44,7 +44,7 @@ const RenameFilesApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-8">
+    <div className=" items-center justify-center bg-gray-100 p-8">
       <div className="max-w-lg w-full bg-white shadow-xl rounded-lg p-8">
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Arquivos</h3>
         

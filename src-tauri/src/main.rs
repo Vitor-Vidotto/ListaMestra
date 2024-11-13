@@ -1,5 +1,8 @@
 use tauri::{Manager, Window};  // Importa as dependências necessárias
 use std::sync::{Arc, Mutex};   // Para controlar o estado de execução
+mod scripts;  // Importa o módulo scripts
+
+use scripts::{rename_files, renomear_fases::renomear_fases};  // Importa a função `renomear_fases` corretamente
 
 // Criamos uma variável estática para controlar se o close_splashscreen foi executado
 lazy_static::lazy_static! {
@@ -32,7 +35,7 @@ async fn close_splashscreen(window: Window) {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![close_splashscreen]) // Registra o comando
+        .invoke_handler(tauri::generate_handler![rename_files::rename_files_in_directory, close_splashscreen, renomear_fases]) // Registra os comandos
         .run(tauri::generate_context!()) // Executa o aplicativo Tauri
         .expect("Erro ao rodar o app");
 }

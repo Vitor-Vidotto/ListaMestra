@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "listamestra",
-        "width": 800,
-        "height": 600,
+        "width": 900,
+        "height": 800,
         "resizable": true,
         "fullscreen": false,
         "url": "http://localhost:3000",
@@ -22,8 +22,8 @@
         "visible": false 
       },
       {
-        "width": 800,
-        "height": 600,
+        "width": 900,
+        "height": 800,
           "url": "splash.html",
         "label": "splashscreen"
         }
