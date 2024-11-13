@@ -3,12 +3,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const appLinks = [
-  { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/renomeadores.jpg" },
-  { title: "Editores", path: "/editores", imageUrl: "/images/editors.jpg" },
-  { title: "Verificadores", path: "/verificadores", imageUrl: "/images/verificadores.jpg" },
-  { title: "Compiladores", path: "/compiladores", imageUrl: "/images/compiladores.jpg" },
-  { title: "Analisadores", path: "/analisadores", imageUrl: "/images/analisadores.jpg" },
-  { title: "Simuladores", path: "/simuladores", imageUrl: "/images/simuladores.jpg" },
+  { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/simuladores.png" },
+  { title: "Editores", path: "/editores", imageUrl: "/images/simuladores.png" },
+  { title: "Verificadores", path: "/verificadores", imageUrl: "/images/simuladores.png" },
+  { title: "Compiladores", path: "/compiladores", imageUrl: "/images/simuladores.png" },
+  { title: "Analisadores", path: "/analisadores", imageUrl: "/images/simuladores.png" },
+  { title: "Simuladores", path: "/simuladores", imageUrl: "/images/simuladores.png" },
 ];
 
 const AppLinksGrid = () => {
