@@ -43,8 +43,8 @@ const RenameStagesApp: React.FC = () => {
     try {
       const result = await invoke<string>("renomear_fases", {
         diretorio: directory,
-        sigla_antiga: selectedSiglaAntiga, // Usando 'sigla_antiga' como chave
-        sigla_nova: selectedSiglaNova,
+        siglaAntiga: selectedSiglaAntiga, // Usando 'sigla_antiga' como chave
+        siglaNova: selectedSiglaNova,
       });
       setRenameMsg(result); // Define o conteúdo para a mensagem de renomeação
     } catch (error) {
