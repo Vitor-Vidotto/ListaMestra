@@ -21,7 +21,7 @@ pub fn renomear_fases(
         Err(_) => return Err("Erro ao ler o diretório.".into()),
     };
 
-    // Definir um conjunto de separadores válidos
+    // Definir um conjunto de separadores válidossigla_antiga
     let separadores = ['-', '_', ' '];
 
     for entry in arquivos {

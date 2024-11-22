@@ -36,10 +36,6 @@ const RenameStagesApp: React.FC = () => {
       return;
     }
 
-    // Verificando os valores antes de enviar para o backend
-    console.log("Sigla Antiga:", selectedSiglaAntiga); 
-    console.log("Sigla Nova:", selectedSiglaNova);
-    
     try {
       const result = await invoke<string>("renomear_fases", {
         diretorio: directory,
