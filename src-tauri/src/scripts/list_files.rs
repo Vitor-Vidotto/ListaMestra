@@ -20,7 +20,7 @@ fn system_time_to_string(time: SystemTime) -> Option<String> {
 }
 
 #[tauri::command]
-pub fn list_files_in_directory(
+pub fn list_detailed_files(
     directory: String,
     extensions: Option<Vec<String>>,
 ) -> Result<Vec<FileDetails>, String> {
