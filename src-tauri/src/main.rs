@@ -2,7 +2,7 @@ use std::fs;
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window};
 mod scripts; // Importa o módulo scripts
-use scripts::{rename_files, renomear_fases::renomear_fases, list_files::list_detailed_files}; // Importa list_detailed_files corretamente
+use scripts::{rename_files, renomear_fases::renomear_fases, list_files::list_files_in_directory}; // Importa list_files_in_directory corretamente
 
 // Estrutura para informações dos arquivos
 #[derive(serde::Serialize)]
@@ -49,7 +49,7 @@ fn main() {
             rename_files::rename_files_in_directory,
             close_splashscreen,
             renomear_fases,
-            list_detailed_files,    // Usa a função importada do módulo
+            list_files_in_directory,    // Usa a função importada do módulo
         ])
         .run(tauri::generate_context!())
         .expect("Erro ao rodar o app");
