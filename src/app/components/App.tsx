@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const appLinks = [
   { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/simuladores.png" },
-  { title: "Editores", path: "/editores", imageUrl: "/images/simuladores.png" },
+  { title: "Arquivos", path: "/arquivos", imageUrl: "/images/simuladores.png" },
   { title: "Verificadores", path: "/verificadores", imageUrl: "/images/simuladores.png" },
   { title: "Compiladores", path: "/compiladores", imageUrl: "/images/simuladores.png" },
   { title: "Analisadores", path: "/analisadores", imageUrl: "/images/simuladores.png" },
