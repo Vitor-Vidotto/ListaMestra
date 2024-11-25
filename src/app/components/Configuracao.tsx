@@ -1,31 +1,41 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { invoke } from '@tauri-apps/api/core';
 
 // Função para salvar o tamanho da janela no localStorage
-const saveWindowSize = (size) => {
-  localStorage.setItem("windowSize", size);
+const saveWindowSize = (size: string) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("windowSize", size);
+  }
 };
 
 // Função para carregar o tamanho da janela do localStorage
 const loadWindowSize = () => {
-  const savedSize = localStorage.getItem("windowSize");
-  return savedSize || 'small'; // Retorna 'small' como valor inicial
+  if (typeof window !== "undefined") {
+    const savedSize = localStorage.getItem("windowSize");
+    return savedSize || 'small'; // Retorna 'small' como valor inicial
+  }
+  return 'small'; // Retorna 'small' se no lado do servidor
 };
 
 const ConfiguracaoPage = () => {
-  const [windowSize, setWindowSize] = useState(loadWindowSize()); // Começa com o valor salvo ou 'small'
-  const [pendingSize, setPendingSize] = useState(null); // Tamanho pendente
+  const [windowSize, setWindowSize] = useState<string>('small'); // Inicialize com valor padrão
+  const [pendingSize, setPendingSize] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false); // Se está aguardando confirmação
   const [timer, setTimer] = useState(15); // Timer de 15 segundos
   const [previousSize, setPreviousSize] = useState(windowSize); // Armazena o tamanho anterior
 
-  // Função para aplicar o tamanho da janela
-  const applyWindowSize = (size) => {
-    setPendingSize(size); // Guarda o tamanho pendente
-    setPreviousSize(windowSize); // Armazena o tamanho anterior
-    setConfirming(true); // Inicia o processo de confirmação
-    setTimer(15); // Reinicia o timer
+  // Carrega o tamanho da janela após o componente ser montado
+  useEffect(() => {
+    const savedSize = loadWindowSize();
+    setWindowSize(savedSize);
+  }, []);
+
+  const applyWindowSize = (size: string) => {
+    setPendingSize(size); 
+    setPreviousSize(windowSize);
+    setConfirming(true);
+    setTimer(15);
   };
 
   // Função para confirmar a mudança de resolução
@@ -59,19 +69,21 @@ const ConfiguracaoPage = () => {
 
     // Redimensiona a janela para os tamanhos pequeno ou médio
     invoke('set_window_size', { width, height })
-      .then(() => {
-        setWindowSize(pendingSize);
-        saveWindowSize(pendingSize); // Salva o novo tamanho da janela
-        setConfirming(false); // Fecha a confirmação
-        setPendingSize(null); // Limpa o tamanho pendente
-      })
-      .catch((error) => {
-        console.error("Erro ao redimensionar a janela:", error);
-      });
+    .then(() => {
+      if (pendingSize) {
+        setWindowSize(pendingSize); // Apenas usa se não for null
+        saveWindowSize(pendingSize); // Salva o novo tamanho
+      }
+      setConfirming(false); // Fecha a confirmação
+      setPendingSize(null); // Limpa o tamanho pendente
+    })
+    .catch((error) => {
+      console.error("Erro ao redimensionar a janela:", error);
+    });
   };
 
   // Função para cancelar a mudança de resolução
-  const cancelChange = () => {
+  const cancelAlteration = () => {
     setConfirming(false); // Cancela a mudança
     setPendingSize(null); // Limpa o tamanho pendente
     setWindowSize(previousSize); // Restaura o tamanho anterior
@@ -90,7 +102,7 @@ const ConfiguracaoPage = () => {
 
   useEffect(() => {
     if (timer === 0 && confirming) {
-      cancelChange(); // Reverte as alterações após 15 segundos
+      cancelAlteration(); // Reverte as alterações após 15 segundos
     }
   }, [timer, confirming]);
 
@@ -128,7 +140,7 @@ const ConfiguracaoPage = () => {
                 Confirmar
               </button>
               <button
-                onClick={cancelChange}
+                onClick={cancelAlteration}
                 className="bg-red-500 text-white py-2 px-4 rounded"
               >
                 Cancelar
