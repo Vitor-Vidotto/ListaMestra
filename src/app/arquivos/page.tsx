@@ -1,5 +1,5 @@
 "use client"
-import ListFilesApp from "../components/ListFiles";
+import FilesLinkGrid from "../components/Arquivos";
 import Navbar from "../components/NavBar";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center h-screen p-8 pb-20 gap-16 sm:p-20 overflow-hidden">
       <main className="flex flex-col gap-8 items-center sm:items-start">
         <Navbar />
-      <ListFilesApp />
+      <FilesLinkGrid />
       </main>
     </div>
   );

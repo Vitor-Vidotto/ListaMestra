@@ -1,22 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
-import { open } from "@tauri-apps/plugin-dialog"; // Importando o método 'open' do plugin Dialog
-import GoBackButton from "./GoBackButton";
 import Link from "next/link";
+import React, { useState } from "react";
 
 const appLinks = [
-    { title: "Renomeadores", path: "/renomeadores/stages", imageUrl: "/images/simuladores.png" },
-    { title: "Arquivos", path: "/renomeadores/files", imageUrl: "/images/simuladores.png" },
-  ];
-  
+  { title: "Listar Arquivos", path: "/arquivos/list", imageUrl: "/images/simuladores.png" },
+  { title: "Mover Arquivos", path: "/renomeadores/move", imageUrl: "/images/simuladores.png" },
+];
 
-const HelpPage: React.FC = () => {
+const FilesLinkGrid = () => {
   return (
-    <div>
-        <div className="w-full flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center mb-4">Ajuda</h1>
+    <div className="w-full flex flex-col items-center">
       <nav className="w-full text-center p-8">
+      <h1 className="text-3xl font-bold mb-4">Arquivos</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8 mx-auto" style={{ width: '600px'}}>
           {appLinks.map((app, index) => (
             <Link
@@ -33,8 +28,9 @@ const HelpPage: React.FC = () => {
         </div>
       </nav>
     </div>
-    </div>
   );
 };
 
-export default HelpPage;
+
+
+export default FilesLinkGrid;
