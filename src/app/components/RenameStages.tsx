@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
 import { open } from "@tauri-apps/plugin-dialog"; // Importando o método 'open' do plugin Dialog
 import GoBackButton from "./GoBackButton";
+import DirectoryInput from "./DirectoryImput";
 
 const RenameStagesApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação
@@ -53,27 +54,14 @@ const RenameStagesApp: React.FC = () => {
       <div className="max-w-lg w-full bg-white shadow-xl rounded-lg p-8">
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Fases</h3>
 
-        <div className="mb-4">
-          <label htmlFor="directory-input" className="block min-w-96 text-lg font-medium text-gray-900">
-            Caminho do Diretório:
-          </label>
-          <div className="flex">
-            <input
-              id="directory-input"
-              type="text"
-              value={directory}
-              onChange={(e) => setDirectory(e.currentTarget.value)}
-              placeholder="Digite o caminho do diretório..."
-              className="w-full mt-2 p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              onClick={selectDirectory}
-              className="ml-2 px-4 py-2 bg-gray-300 rounded-lg text-black hover:bg-gray-400 focus:outline-none"
-            >
-              ...
-            </button>
-          </div>
-        </div>
+        <DirectoryInput
+        directory={directory}
+        setDirectory={setDirectory}
+        selectDirectory={selectDirectory}
+        label="Escolha o Diretório"
+        placeholder="Caminho..."
+        buttonText="..."
+      />
 
         <div className="mb-4">
           <label htmlFor="sigla-antiga" className="block text-lg font-medium text-gray-900">
