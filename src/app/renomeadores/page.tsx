@@ -1,7 +1,5 @@
 "use client"
 import Navbar from "../components/NavBar";
-import RenameFilesApp from "../components/RenameFilesApp";
-import RenameStagesApp from "../components/RenameStages";
 import RenameLinkGrid from "../components/Renomeadores";
 
 export default function Home() {
