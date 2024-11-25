@@ -6,9 +6,10 @@ import { FaQuestionCircle, FaCog, FaSun, FaMoon } from "react-icons/fa"; // Íco
 import { usePathname } from "next/navigation"; // Para obter a rota atual
 
 const helpMessages: Record<string, string> = {
-  "/renomeadores/stages": "Ajuda sobre Renomeadores: Etapas. Aqui você aprenderá como utilizar essa ferramenta.",
-  "/renomeadores/files": "Ajuda sobre Renomeadores: Arquivos. Saiba como gerenciar e organizar seus arquivos.",
-  "/": "Bem-vindo à página inicial! Explore as opções disponíveis para ajuda.",
+    "/": "Bem-vindo à página inicial! Explore as opções disponíveis para ajuda.",
+  "/renomeadores/stages": "Ajuda sobre Renomeadores: Fases. Nesta página selecione o diretório, ou coloque ele manualmente, selecione a fase de qual ele está para qual ele deve ir. Cuiado: Ele renomeará todos os arquivos nesse diretório.",
+  "/renomeadores/files": "Ajuda sobre Renomeadores: Arquivos. Nesta página selecione o diretório, ou coloque ele manualmente, recomenda-se criar uma pasta para mover os arquivos necessários a serem alterados, ele vai apagar apartir do ultimo hífen ' - '. Cuidado: Ele renomeará todos os arquivos nesse diretório.",
+  "/arquivos": "Ajuda sobre Arquivos: Listar Arquivos. Nesta página selecione o diretório, ou coloque ele manualmente, filtre as extensões desejadas e liste os arquivos, clique em 'VISUALIZAR' para ver os listados e em 'SALVAR' para salva-los como '.txt'.",
 };
 
 const HelpModal: React.FC<{ isOpen: boolean; onClose: () => void; message: string }> = ({ isOpen, onClose, message }) => {
