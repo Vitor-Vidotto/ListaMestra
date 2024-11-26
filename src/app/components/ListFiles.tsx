@@ -82,46 +82,49 @@ const ListFilesApp: React.FC = () => {
 // Função para salvar os arquivos em formato TXT
 async function saveToFile() {
   try {
-    // Gera o conteúdo do arquivo no formato TXT
-    const content = [
-      'Nome\tExtensão\tTamanho\tCriado em\tModificado em', // Cabeçalhos com tabulação
-      ...files.map((file) => [
-        file.name,
-        file.extension ?? 'N/A', // Caso a extensão seja nula
-        `${file.size} bytes`,
-        file.created_at ?? 'N/A',
-        file.modified_at ?? 'N/A',
-      ]).map((row) => row.join('\t')), // Junta os dados de cada linha com tabulação
-    ]
-      .join('\n'); // Junta todas as linhas com uma quebra de linha
+    // Adiciona os cabeçalhos no início
+    const header = "Nome\tExtensão\tTamanho\tCriado em\tModificado em";
+
+    // Gera o conteúdo com os arquivos listados
+    const content = files.map((file) => {
+      // Remove a extensão do nome
+      const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove a última extensão, se houver
+
+      // Retorna o formato da linha com os detalhes do arquivo, separado por tabulação
+      return `${nameWithoutExtension}\t${file.extension ?? "N/A"}\t${file.size} bytes\t${file.created_at ?? "N/A"}\t${file.modified_at ?? "N/A"}`;
+    });
+
+    // Junta o cabeçalho com o conteúdo, separando por linhas
+    const fullContent = [header, ...content].join("\n");
 
     // Abre o seletor de arquivos para salvar
     const handle = await window.showSaveFilePicker({
-      suggestedName: 'arquivos_listados.txt', // Nome sugerido para o arquivo
+      suggestedName: "arquivos_listados.txt", // Nome sugerido para o arquivo
       types: [
         {
-          description: 'Texto',
-          accept: { 'text/plain': ['.txt'] },
+          description: "Texto",
+          accept: { "text/plain": [".txt"] },
         },
       ],
     });
 
     // Cria um arquivo com o conteúdo gerado
     const writableStream = await handle.createWritable();
-    
+
     // Converte a string de conteúdo para um array de bytes
-    const textContent = new TextEncoder().encode(content);  // Codifica a string como bytes
+    const textContent = new TextEncoder().encode(fullContent); // Codifica a string como bytes
 
     // Escreve o conteúdo no arquivo
     await writableStream.write(textContent);
-    await writableStream.close();  // Fecha o fluxo de escrita
+    await writableStream.close(); // Fecha o fluxo de escrita
 
-    alert('Arquivo salvo com sucesso!');
+    alert("Arquivo salvo com sucesso!");
   } catch (error) {
-    console.error('Erro ao salvar o arquivo:', error);
-    alert('Erro ao salvar o arquivo');
+    console.error("Erro ao salvar o arquivo:", error);
+    alert("Erro ao salvar o arquivo");
   }
 }
+
 
 
 

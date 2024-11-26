@@ -1,6 +1,7 @@
 "use client"
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import Image from "next/image";
 import App from "./components/App";
 import Navbar from "./components/NavBar";
 

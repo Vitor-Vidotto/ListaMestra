@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "listamestra",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "listamestra",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
@@ -17,15 +17,16 @@
         "height": 800,
         "resizable": true,
         "fullscreen": false,
-        "url": "http://localhost:3000",
+        "url": "file///D:/dev/Tauri App/listamestra/out/index.html",
         "label": "listamestra", 
-        "visible": false 
+        "visible": false
       },
       {
         "width": 900,
         "height": 800,
           "url": "splash.html",
-        "label": "splashscreen"
+        "label": "splashscreen",
+        "visible": true
         }
     ],
     "security": {

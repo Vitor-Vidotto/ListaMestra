@@ -23,7 +23,6 @@ async fn close_splashscreen(window: Window) {
     if *closed {
         return; // Se já foi fechado, não faz nada
     }
-
     // Caso contrário, fecha a splashscreen
     let splashscreen = window
         .get_webview_window("splashscreen")
