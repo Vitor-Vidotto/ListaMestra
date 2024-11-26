@@ -10,6 +10,7 @@ const RenameStagesApp: React.FC = () => {
   const [directory, setDirectory] = useState(""); // Estado para armazenar o diretório
   const [selectedSiglaAntiga, setSelectedSiglaAntiga] = useState<string>(""); // Estado para a sigla antiga
   const [selectedSiglaNova, setSelectedSiglaNova] = useState<string>(""); // Estado para a sigla nova
+  const [zerarRevisao, setZerarRevisao] = useState(false); // Novo estado para o checkbox
 
   const siglas = ["EP", "AP", "PE", "EX", "LO"]; // Lista de siglas disponíveis
 
@@ -42,6 +43,7 @@ const RenameStagesApp: React.FC = () => {
         diretorio: directory,
         siglaAntiga: selectedSiglaAntiga, // Usando 'sigla_antiga' como chave
         siglaNova: selectedSiglaNova,
+        zerarRevisao, // Passa o valor do checkbox
       });
       setRenameMsg(result); // Define o conteúdo para a mensagem de renomeação
     } catch (error) {
@@ -55,13 +57,13 @@ const RenameStagesApp: React.FC = () => {
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Fases</h3>
 
         <DirectoryInput
-        directory={directory}
-        setDirectory={setDirectory}
-        selectDirectory={selectDirectory}
-        label="Escolha o Diretório"
-        placeholder="Caminho..."
-        buttonText="..."
-      />
+          directory={directory}
+          setDirectory={setDirectory}
+          selectDirectory={selectDirectory}
+          label="Escolha o Diretório"
+          placeholder="Caminho..."
+          buttonText="..."
+        />
 
         <div className="mb-4">
           <label htmlFor="sigla-antiga" className="block text-lg font-medium text-gray-900">
@@ -99,6 +101,19 @@ const RenameStagesApp: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="zerar-revisao" className="inline-flex items-center text-lg font-medium text-gray-900">
+            <input
+              id="zerar-revisao"
+              type="checkbox"
+              checked={zerarRevisao}
+              onChange={(e) => setZerarRevisao(e.target.checked)}
+              className="mr-2 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+            />
+            Zerar Revisão?
+          </label>
         </div>
 
         <div className="flex justify-center mb-4">
