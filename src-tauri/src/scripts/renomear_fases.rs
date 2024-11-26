@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::Path;
+use regex::Regex;
 use tauri::command;
 
 #[command]
@@ -7,6 +8,7 @@ pub fn renomear_fases(
     diretorio: String,
     sigla_antiga: String,
     sigla_nova: String,
+    zerar_revisao: bool, // Novo parâmetro
 ) -> Result<String, String> {
     let diretorio_path = Path::new(&diretorio);
 
@@ -21,8 +23,11 @@ pub fn renomear_fases(
         Err(_) => return Err("Erro ao ler o diretório.".into()),
     };
 
-    // Definir um conjunto de separadores válidossigla_antiga
+    // Definir um conjunto de separadores válidos
     let separadores = ['-', '_', ' '];
+
+    // Regex para identificar revisões no formato "RXX" (de R00 a R99)
+    let regex_revisao = Regex::new(r"R\d{2}").unwrap();
 
     for entry in arquivos {
         if let Ok(entry) = entry {
@@ -47,6 +52,11 @@ pub fn renomear_fases(
                     );
                 }
 
+                // Zerar a revisão se a opção estiver marcada
+                if zerar_revisao {
+                    novo_nome = regex_revisao.replace_all(&novo_nome, "R00").to_string();
+                }
+
                 // Remover separador extra no início ou fim, se existir
                 novo_nome = novo_nome.trim_matches(&['-', '_', ' '][..]).to_string();
 
@@ -56,7 +66,10 @@ pub fn renomear_fases(
                     let novo_caminho = diretorio_path.join(novo_nome);
                     match fs::rename(antigo_caminho, novo_caminho) {
                         Ok(_) => (),
-                        Err(_) => return Err("Erro ao renomear o arquivo.".into()),
+                        Err(_) => return Err(format!(
+                            "Erro ao renomear o arquivo: {}",
+                            arquivo_nome
+                        )),
                     }
                 }
             }
