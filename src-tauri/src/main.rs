@@ -7,7 +7,7 @@
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window};
 mod scripts; // Importa o módulo scripts
-use scripts::{rename_files, renomear_fases::renomear_fases, list_files::list_files_in_directory, set_window_size::set_window_size, set_fullscreen::set_fullscreen, file_manager::{list_files,open_in_explorer}}; // Importa list_files_in_directory corretamente
+use scripts::{rename_files, renomear_fases::renomear_fases, list_files::list_files_in_directory, set_window_size::set_window_size, set_fullscreen::set_fullscreen, file_manager::{list_files,open_in_explorer,search_files}}; // Importa list_files_in_directory corretamente
 
 // Estrutura para informações dos arquivos
 #[derive(serde::Serialize)]
@@ -57,6 +57,7 @@ fn main() {
             set_window_size,
             open_in_explorer,
             list_files,
+            search_files,
             set_fullscreen,  // Usa a função importada do módulo
         ])
         .run(tauri::generate_context!())

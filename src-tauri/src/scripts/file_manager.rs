@@ -29,14 +29,14 @@ fn list_files_recursive(diretorio: &Path, profundidade: usize) -> Vec<FileNode> 
                 // Chama recursivamente para subpastas
                 let subpastas = list_files_recursive(&caminho, profundidade + 1);
                 nodes.push(FileNode {
-                    nome,
+                    nome: nome.clone(), // Clona a string para evitar o erro de mover
                     tipo: "directory".to_string(),
                     caminho: caminho.to_string_lossy().to_string(),
                     conteudo: Some(subpastas),
                 });
             } else {
                 nodes.push(FileNode {
-                    nome,
+                    nome: nome.clone(), // Clona a string para evitar o erro de mover
                     tipo: "file".to_string(),
                     caminho: caminho.to_string_lossy().to_string(),
                     conteudo: None,
@@ -67,4 +67,44 @@ pub fn open_in_explorer(path: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+// Função para buscar arquivos ou pastas pelo nome
+#[tauri::command]
+pub fn search_files(diretorio: &Path, termo: &str) -> Vec<FileNode> {
+    let mut nodes = Vec::new();
+
+    if let Ok(entries) = fs::read_dir(diretorio) {
+        for entry in entries.filter_map(Result::ok) {
+            let caminho = entry.path();
+            let nome = entry.file_name().into_string().unwrap_or_default();
+
+            // Verifica se o nome do item contém o termo de pesquisa
+            if nome.to_lowercase().contains(&termo.to_lowercase()) {
+                if caminho.is_dir() {
+                    nodes.push(FileNode {
+                        nome: nome.clone(),
+                        tipo: "directory".to_string(),
+                        caminho: caminho.to_string_lossy().to_string(),
+                        conteudo: None,
+                    });
+                } else {
+                    nodes.push(FileNode {
+                        nome: nome.clone(),
+                        tipo: "file".to_string(),
+                        caminho: caminho.to_string_lossy().to_string(),
+                        conteudo: None,
+                    });
+                }
+            }
+
+            // Se for uma pasta, chama a função recursiva para buscar dentro dela
+            if caminho.is_dir() {
+                let sub_nodes = search_files(&caminho, termo);
+                nodes.extend(sub_nodes);
+            }
+        }
+    }
+
+    nodes
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core"; // Certifique-se de importar corretamente
 import { open } from "@tauri-apps/plugin-dialog"; // Importando o método 'open' do plugin Dialog
 import GoBackButton from "./GoBackButton";
-import DirectoryInput from "./DirectoryImput";
+import DirectoryInput from "./DirectoryInput";
 
 const RenameStagesApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação

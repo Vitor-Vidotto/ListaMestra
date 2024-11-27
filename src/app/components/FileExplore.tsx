@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { open } from "@tauri-apps/plugin-dialog"; 
-import DirectoryInput from './DirectoryImput';
+import { open } from "@tauri-apps/plugin-dialog";
+import DirectoryInput from './DirectoryInput';
 
 interface FileNode {
   nome: string;
@@ -85,22 +85,19 @@ const FileNavigator: React.FC = () => {
     try {
       await invoke('open_in_explorer', { path: caminho });
     } catch (error) {
-      console.log("erro")
+      console.log("Erro ao abrir no explorador", error);
     }
   };
 
   // Função recursiva para filtrar arquivos/pastas com base no nome
   const filtrarArquivos = (item: FileNode) => {
-    // Verifica se o nome do arquivo ou pasta corresponde ao filtro
     const corresponde = item.nome.toLowerCase().includes(filtro.toLowerCase());
 
     // Se for uma pasta, verifica recursivamente as subpastas
     if (item.tipo === 'directory' && item.conteudo) {
-      // Filtra o conteúdo da pasta
       item.conteudo = item.conteudo.filter(filtrarArquivos);
     }
 
-    // Retorna true se o item ou qualquer subitem dentro dele corresponder ao filtro
     return corresponde || (item.tipo === 'directory' && item.conteudo?.length > 0);
   };
 
@@ -111,14 +108,12 @@ const FileNavigator: React.FC = () => {
   const renderizarPasta = (pasta: FileNode) => (
     <div key={pasta.caminho}>
       <div className="flex items-center space-x-2">
-        {/* Ícone de pasta */}
         <button
           onClick={() => togglePasta(pasta)}
           className="text-blue-500 cursor-pointer"
         >
           {pasta.tipo === 'directory' ? '📂' : '📄'} {pasta.nome}
         </button>
-        {/* Botão para abrir no explorador de arquivos */}
         <button
           onClick={() => abrirNoExplorador(pasta.caminho)}
           className="text-green-500 cursor-pointer ml-2"
@@ -126,7 +121,6 @@ const FileNavigator: React.FC = () => {
           🌍
         </button>
       </div>
-      {/* Exibe o conteúdo da pasta se ela estiver aberta */}
       {pasta.tipo === 'directory' && pasta.aberto && pasta.conteudo && (
         <div className="ml-4 space-y-2">
           {pasta.conteudo.map((subItem) => renderizarPasta(subItem))}
@@ -137,9 +131,9 @@ const FileNavigator: React.FC = () => {
 
   const selectDirectory = async () => {
     try {
-      const dir = await open({ multiple: false, directory: true }); // Definindo 'directory' como true para permitir a seleção de pastas
+      const dir = await open({ multiple: false, directory: true }); // Seleção de pasta
       if (dir) {
-        setDiretorio(dir as string); // Definindo o diretório selecionado no estado
+        setDiretorio(dir as string); // Atualiza o diretório selecionado
       }
     } catch (error) {
       console.error("Erro ao abrir o seletor de diretórios:", error);
@@ -175,8 +169,8 @@ const FileNavigator: React.FC = () => {
         <div className="relative bg-white p-4 rounded-lg shadow-xl border border-gray-300">
           <button
             onClick={() => {
-              setEstruturaArquivos([]);
-              setFiltro("");
+              setEstruturaArquivos([]); // Limpa a estrutura de arquivos
+              setFiltro(""); // Limpa o filtro
             }}
             className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 transition-all"
           >
