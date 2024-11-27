@@ -16,12 +16,13 @@ const FileNavigator: React.FC = () => {
   const [diretorio, setDiretorio] = useState<string>(''); // Caminho do diretório
   const [estruturaArquivos, setEstruturaArquivos] = useState<FileNode[]>([]); // Estrutura de arquivos e pastas
   const [filtro, setFiltro] = useState<string>(''); // Filtro de busca
+  const [profundidade, setProfundidade] = useState<number>(2); // Profundidade para explorar subpastas
 
   // Função para listar arquivos e pastas do diretório
-  const listarArquivos = async (diretorio: string) => {
+  const listarArquivos = async (diretorio: string, profundidade: number) => {
     try {
       console.log('Buscando arquivos para o diretório:', diretorio);
-      const arquivos = await invoke('list_files', { diretorio });
+      const arquivos = await invoke('list_files', { diretorio, profundidade });
       console.log('Arquivos retornados:', arquivos);
       const estrutura: FileNode[] = arquivos.map((item: any) => {
         return {
@@ -42,7 +43,7 @@ const FileNavigator: React.FC = () => {
   const carregarConteudoPasta = async (pasta: FileNode) => {
     if (!pasta.conteudo || pasta.conteudo.length === 0) {
       // Se o conteúdo da pasta ainda não foi carregado
-      const arquivos = await invoke('list_files', { diretorio: pasta.caminho });
+      const arquivos = await invoke('list_files', { diretorio: pasta.caminho, profundidade });
       const conteudo = arquivos.map((item: any) => ({
         nome: item.nome,
         tipo: item.tipo,
@@ -74,7 +75,7 @@ const FileNavigator: React.FC = () => {
   // Função para buscar arquivos de um diretório específico
   const handleBuscarDiretorio = () => {
     if (diretorio) {
-      listarArquivos(diretorio);
+      listarArquivos(diretorio, profundidade);
     } else {
       alert("Por favor, insira um diretório válido.");
     }
@@ -155,6 +156,18 @@ const FileNavigator: React.FC = () => {
         >
           Buscar Diretório
         </button>
+      </div>
+
+      <div className="flex gap-x-2 items-center">
+        <label htmlFor="profundidade" className="text-gray-700">Profundidade da Busca:</label>
+        <input
+          id="profundidade"
+          type="number"
+          value={profundidade}
+          min={1}
+          onChange={(e) => setProfundidade(Number(e.target.value))}
+          className="w-16 p-2 border rounded-lg text-gray-700"
+        />
       </div>
 
       <input

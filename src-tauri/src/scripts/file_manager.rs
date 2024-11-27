@@ -2,7 +2,6 @@ use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-// Estrutura que representa um arquivo ou diretório
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct FileNode {
     pub nome: String,
@@ -12,11 +11,11 @@ pub struct FileNode {
 }
 
 // Função recursiva para listar arquivos e pastas em um diretório com profundidade limitada
-fn list_files_recursive(diretorio: &Path, profundidade: usize) -> Vec<FileNode> {
+fn list_files_recursive(diretorio: &Path, profundidade: usize, max_depth: usize) -> Vec<FileNode> {
     let mut nodes = Vec::new();
 
-    // Limita a profundidade da busca a 2 subpastas
-    if profundidade > 2 {
+    // Limita a profundidade da busca
+    if profundidade > max_depth {
         return nodes;
     }
 
@@ -27,16 +26,16 @@ fn list_files_recursive(diretorio: &Path, profundidade: usize) -> Vec<FileNode> 
 
             if caminho.is_dir() {
                 // Chama recursivamente para subpastas
-                let subpastas = list_files_recursive(&caminho, profundidade + 1);
+                let subpastas = list_files_recursive(&caminho, profundidade + 1, max_depth);
                 nodes.push(FileNode {
-                    nome: nome.clone(), // Clona a string para evitar o erro de mover
+                    nome: nome.clone(),
                     tipo: "directory".to_string(),
                     caminho: caminho.to_string_lossy().to_string(),
                     conteudo: Some(subpastas),
                 });
             } else {
                 nodes.push(FileNode {
-                    nome: nome.clone(), // Clona a string para evitar o erro de mover
+                    nome: nome.clone(),
                     tipo: "file".to_string(),
                     caminho: caminho.to_string_lossy().to_string(),
                     conteudo: None,
@@ -50,8 +49,8 @@ fn list_files_recursive(diretorio: &Path, profundidade: usize) -> Vec<FileNode> 
 
 // Função pública para listar arquivos e pastas, chamando a função recursiva com profundidade inicial 0
 #[tauri::command]
-pub fn list_files(diretorio: &Path) -> Vec<FileNode> {
-    list_files_recursive(diretorio, 0)
+pub fn list_files(diretorio: &Path, profundidade: usize) -> Vec<FileNode> {
+    list_files_recursive(diretorio, 0, profundidade)
 }
 
 // Função para abrir no explorador de arquivos do sistema
