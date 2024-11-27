@@ -1,4 +1,9 @@
-use std::fs;
+
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
+
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window};
 mod scripts; // Importa o módulo scripts
