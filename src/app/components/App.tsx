@@ -5,10 +5,10 @@ import React, { useState } from "react";
 const appLinks = [
   { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/simuladores.png" },
   { title: "Arquivos", path: "/arquivos", imageUrl: "/images/simuladores.png" },
-  { title: "Verificadores", path: "/verificadores", imageUrl: "/images/simuladores.png" },
-  { title: "Compiladores", path: "/compiladores", imageUrl: "/images/simuladores.png" },
-  { title: "Analisadores", path: "/analisadores", imageUrl: "/images/simuladores.png" },
-  { title: "Simuladores", path: "/simuladores", imageUrl: "/images/simuladores.png" },
+  { title: "Verificadores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Compiladores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Analisadores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Simuladores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
 ];
 
 const AppLinksGrid = () => {
