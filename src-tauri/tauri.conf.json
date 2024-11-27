@@ -17,7 +17,7 @@
         "height": 800,
         "resizable": true,
         "fullscreen": false,
-        "url": "http://localhost:3000",
+        "url": "file///D:/dev/Tauri App/listamestra/out/index.html",
         "label": "listamestra", 
         "visible": false
       },
