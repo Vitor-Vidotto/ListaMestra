@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const appLinks = [
   { title: "Listar Arquivos", path: "/arquivos/list", imageUrl: "/images/simuladores.png" },
-  { title: "Mover Arquivos", path: "/renomeadores/move", imageUrl: "/images/simuladores.png" },
+  { title: "Mover Arquivos", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
 ];
 
 const FilesLinkGrid = () => {
