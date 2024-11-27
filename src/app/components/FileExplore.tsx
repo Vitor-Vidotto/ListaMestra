@@ -22,9 +22,12 @@ const FileNavigator: React.FC = () => {
   const listarArquivos = async (diretorio: string, profundidade: number) => {
     try {
       console.log('Buscando arquivos para o diretório:', diretorio);
-      const arquivos = await invoke('list_files', { diretorio, profundidade });
+      
+      // Especificar que 'arquivos' será do tipo any[]
+      const arquivos: any[] = await invoke('list_files', { diretorio, profundidade });
       console.log('Arquivos retornados:', arquivos);
-      const estrutura: FileNode[] = arquivos.map((item: any) => {
+
+      const estrutura: FileNode[] = arquivos.map((item) => {
         return {
           nome: item.nome,
           tipo: item.tipo, // 'file' ou 'directory'
@@ -33,6 +36,7 @@ const FileNavigator: React.FC = () => {
           aberto: false, // Inicialmente fechado
         };
       });
+
       setEstruturaArquivos(estrutura);
     } catch (error) {
       console.error('Erro ao listar arquivos:', error);
@@ -43,8 +47,8 @@ const FileNavigator: React.FC = () => {
   const carregarConteudoPasta = async (pasta: FileNode) => {
     if (!pasta.conteudo || pasta.conteudo.length === 0) {
       // Se o conteúdo da pasta ainda não foi carregado
-      const arquivos = await invoke('list_files', { diretorio: pasta.caminho, profundidade });
-      const conteudo = arquivos.map((item: any) => ({
+      const arquivos: any[] = await invoke('list_files', { diretorio: pasta.caminho, profundidade });
+      const conteudo = arquivos.map((item) => ({
         nome: item.nome,
         tipo: item.tipo,
         caminho: item.caminho,
@@ -99,7 +103,7 @@ const FileNavigator: React.FC = () => {
       item.conteudo = item.conteudo.filter(filtrarArquivos);
     }
 
-    return corresponde || (item.tipo === 'directory' && item.conteudo?.length > 0);
+    return corresponde || (item.tipo === 'directory' && (item.conteudo?.length ?? 0) > 0);
   };
 
   // Filtra os arquivos com base no nome
@@ -166,7 +170,7 @@ const FileNavigator: React.FC = () => {
           value={profundidade}
           min={1}
           onChange={(e) => setProfundidade(Number(e.target.value))}
-          className="w-16 p-2 border rounded-lg text-gray-700"
+          className="w-16 p-2 border rounded-lg"
         />
       </div>
 
