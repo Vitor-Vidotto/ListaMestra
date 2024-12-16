@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from "@tauri-apps/plugin-dialog";
 import DirectoryInput from './DirectoryInput';
+import GoBackButton from './GoBackButton';
 
 interface FileNode {
   nome: string;
@@ -181,6 +182,7 @@ const FileNavigator: React.FC = () => {
         placeholder="🔍 Filtrar arquivos..."
         className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
       />
+      <GoBackButton />
 
       {estruturaArquivos.length > 0 && (
         <div className="relative bg-white p-4 rounded-lg shadow-xl border border-gray-300">
