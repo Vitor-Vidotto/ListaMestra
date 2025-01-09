@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::Path;
+use regex::Regex;
 
 #[tauri::command]
 pub fn rename_files_in_directory(
@@ -12,6 +13,9 @@ pub fn rename_files_in_directory(
     if !dir_path.is_dir() {
         return Err("Diretório não encontrado.".to_string());
     }
+
+    // Compila a expressão regular para capturar números
+    let re = Regex::new(r"(\d+)(?:\D+)(\d+)").map_err(|_| "Falha ao compilar expressão regular.")?;
 
     // Percorre os arquivos no diretório
     let mut renamed_files = Vec::new();
@@ -28,23 +32,42 @@ pub fn rename_files_in_directory(
                 let (name, ext) = filename.rsplit_once('.').unwrap();
                 let parts: Vec<&str> = name.rsplitn(2, '-').collect();
 
-                let new_name = if parts.len() > 1 {
-                    parts[1].trim().to_string()
-                } else {
-                    name.to_string()
-                };
+                // Tenta encontrar duas partes numéricas no nome do arquivo
+                if let Some(captures) = re.captures(name) {
+                    let first_number_str = captures.get(1).map_or("", |m| m.as_str());
+                    let second_number_str = captures.get(2).map_or("", |m| m.as_str());
+                    
+                    let first_number: i32 = first_number_str.parse().unwrap_or(0);
+                    let second_number: i32 = second_number_str.parse().unwrap_or(0);
 
-                let new_filename = format!("{}.{}", new_name, ext);
-                let old_path = dir_path.join(&filename);
-                let new_path = dir_path.join(new_filename.clone());
+                    // Verifica se os números são numericamente próximos (diferença menor que 5)
+                    if (first_number - second_number).abs() <= 5 {
+                        println!(
+                            "Renomeando: substituindo {} por {}",
+                            first_number, second_number
+                        );
 
-                // Renomeia o arquivo
-                fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?;
-                renamed_files.push(format!(
-                    "Renomeado: {} -> {}",
-                    filename,
-                    new_filename.clone()
-                ));
+                        // Substitui o número 1 pelo número 2
+                        let mut new_name = name.replace(first_number_str, &second_number_str.to_string());
+
+                        // Remove a parte após o último hífen
+                        if let Some(pos) = new_name.rfind('-') {
+                            new_name = new_name[..pos].to_string(); // Mantém o que está antes do último hífen
+                        }
+
+                        let new_filename = format!("{}.{}", new_name, ext);
+                        let old_path = dir_path.join(&filename);
+                        let new_path = dir_path.join(new_filename.clone());
+
+                        // Renomeia o arquivo
+                        fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?;
+                        renamed_files.push(format!(
+                            "Renomeado: {} -> {}",
+                            filename,
+                            new_filename.clone()
+                        ));
+                    }
+                }
             }
         }
     }
