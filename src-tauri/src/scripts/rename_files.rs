@@ -41,7 +41,7 @@ pub fn rename_files_in_directory(
                     let second_number: i32 = second_number_str.parse().unwrap_or(0);
 
                     // Verifica se os números são numericamente próximos (diferença menor que 5)
-                    if (first_number - second_number).abs() <= 5 {
+                    if (first_number - second_number).abs() <= 20 {
                         println!(
                             "Renomeando: substituindo {} por {}",
                             first_number, second_number
