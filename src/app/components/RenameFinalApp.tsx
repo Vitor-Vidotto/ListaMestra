@@ -5,7 +5,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import GoBackButton from "./GoBackButton";
 import DirectoryInput from "./DirectoryInput";
 
-const RenameFilesApp: React.FC = () => {
+const RenameFinalApp: React.FC = () => {
   const [renameMsg, setRenameMsg] = useState(""); // Estado para mensagem de renomeação
   const [directory, setDirectory] = useState(""); // Estado para armazenar o diretório
   const [selectedExtensions, setSelectedExtensions] = useState<string[]>([]); // Estado para armazenar as extensões selecionadas
@@ -13,7 +13,7 @@ const RenameFilesApp: React.FC = () => {
   const extensions = ["pdf", "dwg", "png", "jpeg", "jpg", "docx", "xlsx"]; // Lista de extensões disponíveis
 
   // Função para chamar o comando de renomeação de arquivos
-  async function renameFiles() {
+  async function renameFinal() {
     if (!directory) {
       setRenameMsg("Por favor, insira um diretório.");
       return;
@@ -25,7 +25,7 @@ const RenameFilesApp: React.FC = () => {
     }
 
     try {
-      const result = await invoke<string>("rename_files_in_directory", {
+      const result = await invoke<string>("rename_final_dir", {
         directory,
         extensions: selectedExtensions,
       });
@@ -61,7 +61,7 @@ const RenameFilesApp: React.FC = () => {
   return (
     <div className=" items-center justify-center bg-gray-100 p-8">
       <div className="max-w-lg w-full bg-white shadow-xl rounded-lg p-8">
-        <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Numérico</h3>
+        <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Final</h3>
         
         <DirectoryInput
         directory={directory}
@@ -91,7 +91,7 @@ const RenameFilesApp: React.FC = () => {
 
         <div className="flex justify-center mb-4">
           <button
-            onClick={renameFiles}
+            onClick={renameFinal}
             className="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Renomear Arquivos
@@ -107,4 +107,4 @@ const RenameFilesApp: React.FC = () => {
   );
 };
 
-export default RenameFilesApp;
+export default RenameFinalApp;
