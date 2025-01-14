@@ -4,7 +4,8 @@ import React, { useState } from "react";
 
 const appLinks = [
   { title: "Renomeador de Fase", path: "/renomeadores/stages", imageUrl: "/images/simuladores.png" },
-  { title: "Renomeador de Arquivo", path: "/renomeadores/files", imageUrl: "/images/simuladores.png" },
+  { title: "Renomeador Numérico", path: "/renomeadores/files", imageUrl: "/images/simuladores.png" },
+  { title: "Removedor de Final", path: "/renomeadores/final", imageUrl: "/images/simuladores.png" },
 ];
 
 const RenameLinkGrid = () => {
