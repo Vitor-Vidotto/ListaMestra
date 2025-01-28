@@ -62,6 +62,7 @@ const RenameFilesApp: React.FC = () => {
     <div className=" items-center justify-center bg-gray-100 p-8">
       <div className="max-w-lg w-full bg-white shadow-xl rounded-lg p-8">
         <h3 className="text-2xl font-semibold text-center text-black mb-6">Renomear Numérico</h3>
+
         
         <DirectoryInput
         directory={directory}
@@ -71,6 +72,7 @@ const RenameFilesApp: React.FC = () => {
         placeholder="Caminho..."
         buttonText="..."
       />
+        <h4 className="text-8x1 font-semibold text-center text-gray-500">(Subistitui a primeiro numero pelo gerado no final)</h4>
         
         <div className="mb-6">
           <h4 className="text-lg font-medium text-gray-900 mb-2">Selecione as Extensões para Renomear:</h4>
