@@ -39,14 +39,14 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
           if (!row.Name || !/Line|AL_Bloco|14X19X44/.test(row.Name.trim())) return false;
           
           const validFields = [row["Position X"], row["Position Y"], row["Position Z"], row.Rotation, row["Scale X"]];
-          const filledValues = validFields.filter(value => value !== undefined && value !== null && value !== '');
+          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value) !== '');
           return filledValues.length >= 2;
         });
 
         // Definindo as colunas desejadas
         const desiredColumns = ['Name', 'Position X', 'Position Y', 'Position Z', 'Rotation', 'Scale X'];
         const formattedData = filteredData.map(row => {
-          let newRow: any = {};
+          const newRow: any = {};
           desiredColumns.forEach(col => newRow[col] = row[col as keyof DataRow]);
           return newRow;
         });
@@ -81,7 +81,7 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
         value={fileName}
         onChange={(e) => setFileName(e.target.value)}
         placeholder="Nome do arquivo"
-        className="mb-4 border p-2 w-full"
+        className="mb-4 border p-2 w-full text-black"
       />
       <button
         onClick={processExcelFile}

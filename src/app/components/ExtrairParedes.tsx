@@ -44,14 +44,15 @@ export default function ExtrairParedes({ file }: ExcelProcessorProps){
             row['End Y'],
             row['Angle'],
           ];
-          const filledValues = validFields.filter((value) => value !== undefined && value !== null && value !== '');
+          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value) !== '');
+
           return filledValues.length >= 2;
         });
 
         // Definindo as colunas desejadas
         const desiredColumns = ['Layer', 'Start X', 'End X', 'Start Y', 'End Y', 'Angle'];
         const formattedData = filteredData.map((row) => {
-          let newRow: any = {};
+          const newRow: any = {};
           desiredColumns.forEach((col) => (newRow[col] = row[col as keyof DataRow]));
           return newRow;
         });
@@ -86,7 +87,7 @@ export default function ExtrairParedes({ file }: ExcelProcessorProps){
         value={fileName}
         onChange={(e) => setFileName(e.target.value)}
         placeholder="Nome do arquivo"
-        className="mb-4 border p-2 w-full"
+        className="mb-4 border p-2 w-full text-black"
       />
       <button
         onClick={processExcelFile}

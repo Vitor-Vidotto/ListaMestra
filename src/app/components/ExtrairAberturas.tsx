@@ -71,7 +71,7 @@ export default function ExtrairAberturas({ file }: ExcelProcessorProps) {
         });
 
         const formattedData = filteredDataWithValidColumns.map((row) => {
-          let newRow: any = {};
+          const newRow: any = {};
           desiredColumns.forEach((col) => (newRow[col] = row[col as keyof DataRow]));
           return newRow;
         });
@@ -104,7 +104,7 @@ export default function ExtrairAberturas({ file }: ExcelProcessorProps) {
         value={fileName}
         onChange={(e) => setFileName(e.target.value)}
         placeholder="Nome do arquivo"
-        className="mb-4 border p-2 w-full"
+        className="mb-4 border p-2 w-full text-black"
       />
       <button
         onClick={processExcelFile}

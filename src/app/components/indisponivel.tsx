@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 const Indisponivel = () => {
   return (
     <div className="w-full flex flex-col items-center min-h-screen">
@@ -14,7 +16,7 @@ const Indisponivel = () => {
         </nav>
         <br />
         <div className="animate-spin-slow mb-8">
-          <img
+          <Image
             src="images/gear.svg"
             alt="Engrenagem girando"
             className="h-20 w-20"

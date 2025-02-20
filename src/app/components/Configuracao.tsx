@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { invoke } from '@tauri-apps/api/core';
 
@@ -19,13 +18,12 @@ const loadWindowSize = () => {
 };
 
 const ConfiguracaoPage = () => {
-  const [windowSize, setWindowSize] = useState<string>('small'); // Inicialize com valor padrão
+  const [windowSize, setWindowSize] = useState<string>('small');
   const [pendingSize, setPendingSize] = useState<string | null>(null);
-  const [confirming, setConfirming] = useState(false); // Se está aguardando confirmação
-  const [timer, setTimer] = useState(15); // Timer de 15 segundos
-  const [previousSize, setPreviousSize] = useState(windowSize); // Armazena o tamanho anterior
+  const [confirming, setConfirming] = useState(false);
+  const [timer, setTimer] = useState(15);
+  const [previousSize, setPreviousSize] = useState(windowSize);
 
-  // Carrega o tamanho da janela após o componente ser montado
   useEffect(() => {
     const savedSize = loadWindowSize();
     setWindowSize(savedSize);
@@ -38,7 +36,6 @@ const ConfiguracaoPage = () => {
     setTimer(15);
   };
 
-  // Função para confirmar a mudança de resolução
   const confirmResolutionChange = () => {
     let width = 900, height = 720;
 
@@ -55,9 +52,9 @@ const ConfiguracaoPage = () => {
         invoke('set_fullscreen')
           .then(() => {
             setWindowSize('large');
-            saveWindowSize('large'); // Salva a configuração para 'large'
-            setConfirming(false); // Fecha a confirmação
-            setPendingSize(null); // Limpa o tamanho pendente
+            saveWindowSize('large');
+            setConfirming(false);
+            setPendingSize(null);
           })
           .catch((error) => {
             console.error("Erro ao alternar para tela cheia:", error);
@@ -67,44 +64,42 @@ const ConfiguracaoPage = () => {
         break;
     }
 
-    // Redimensiona a janela para os tamanhos pequeno ou médio
     invoke('set_window_size', { width, height })
-    .then(() => {
-      if (pendingSize) {
-        setWindowSize(pendingSize); // Apenas usa se não for null
-        saveWindowSize(pendingSize); // Salva o novo tamanho
-      }
-      setConfirming(false); // Fecha a confirmação
-      setPendingSize(null); // Limpa o tamanho pendente
-    })
-    .catch((error) => {
-      console.error("Erro ao redimensionar a janela:", error);
-    });
+      .then(() => {
+        if (pendingSize) {
+          setWindowSize(pendingSize);
+          saveWindowSize(pendingSize);
+        }
+        setConfirming(false);
+        setPendingSize(null);
+      })
+      .catch((error) => {
+        console.error("Erro ao redimensionar a janela:", error);
+      });
   };
 
-  // Função para cancelar a mudança de resolução
-  const cancelAlteration = () => {
-    setConfirming(false); // Cancela a mudança
-    setPendingSize(null); // Limpa o tamanho pendente
-    setWindowSize(previousSize); // Restaura o tamanho anterior
-    saveWindowSize(previousSize); // Salva o tamanho anterior
-  };
+  const cancelAlteration = useCallback(() => {
+    setConfirming(false);
+    setPendingSize(null);
+    setWindowSize(previousSize);
+    saveWindowSize(previousSize);
+  }, [previousSize]);
 
-  // Função para contar o tempo restante
   useEffect(() => {
     if (confirming && timer > 0) {
       const interval = setInterval(() => {
         setTimer((prev) => prev - 1);
       }, 1000);
-      return () => clearInterval(interval);
+
+      return () => clearInterval(interval); // Limpeza do intervalo quando o componente for desmontado
     }
   }, [confirming, timer]);
 
   useEffect(() => {
     if (timer === 0 && confirming) {
-      cancelAlteration(); // Reverte as alterações após 15 segundos
+      cancelAlteration();
     }
-  }, [timer, confirming]);
+  }, [timer, confirming, cancelAlteration]);
 
   return (
     <div className="w-full flex flex-col items-center p-8">
@@ -126,7 +121,6 @@ const ConfiguracaoPage = () => {
         </div>
       </div>
 
-      {/* Modal de Confirmação */}
       {confirming && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
           <div className="bg-white text-gray-900 p-6 rounded shadow-lg w-96 text-center">

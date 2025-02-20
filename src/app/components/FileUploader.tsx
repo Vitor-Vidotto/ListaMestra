@@ -2,8 +2,9 @@ import { useState, ReactNode } from 'react';
 
 type FileUploaderProps = {
   onFileChange: (file: File | null) => void;
-  children: ReactNode;
+  children?: ReactNode; // Torne children opcional
 };
+
 
 export default function FileUploader({ onFileChange, children }: FileUploaderProps) {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
