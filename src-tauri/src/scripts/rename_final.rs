@@ -15,12 +15,12 @@ pub fn rename_final_dir(
     }
 
     // Compila a expressão regular para capturar o número final após '-' ou '_'
-    let re = Regex::new(r"([\w\-]+)[\-_]\d+$").map_err(|_| "Falha ao compilar expressão regular.")?;
+    let re = Regex::new(r"^(.*?)(?:[-_]\d{4})(\.[a-zA-Z0-9]+)$").map_err(|_| "Falha ao compilar expressão regular.")?;
 
     // Percorre os arquivos no diretório
     let mut renamed_files = Vec::new();
     for entry in fs::read_dir(dir_path).map_err(|_| "Falha ao ler o diretório.")? {
-        let entry = entry.map_err(|_| "Falha ao acessar o arquivo.")?;
+        let entry = entry.map_err(|_| "Falha ao acessar o arquivo.")?; 
         let filename = entry
             .file_name()
             .into_string()
@@ -30,19 +30,16 @@ pub fn rename_final_dir(
         if let Some(extension) = filename.rsplit('.').next() {
             if extensions.contains(&extension.to_lowercase()) {
                 if let Some(captures) = re.captures(&filename) {
-                    // Remove o número final
-                    let new_name = captures[1].to_string();
-                    let (base_name, ext) = filename.rsplit_once('.').unwrap();
-                    let new_filename = format!("{}.{}", new_name, ext);
-
+                    // Remove o número final de 4 dígitos antes da extensão
+                    let new_name = format!("{}{}", &captures[1], &captures[2]);
                     let old_path = dir_path.join(&filename);
-                    let new_path = dir_path.join(&new_filename);
+                    let new_path = dir_path.join(&new_name);
 
                     // Renomeia o arquivo
-                    fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?;
+                    fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?; 
                     renamed_files.push(format!(
                         "Renomeado: {} -> {}",
-                        filename, new_filename
+                        filename, new_name
                     ));
                 }
             }
