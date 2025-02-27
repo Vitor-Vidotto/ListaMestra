@@ -9,4 +9,5 @@ export const helpMessages: Record<string, string> = {
     "/arquivos/list": "Ajuda sobre Arquivos: Listar Arquivos. Nesta página selecione o diretório, ou coloque ele manualmente, filtre as extensões desejadas e liste os arquivos, clique em 'VISUALIZAR' para ver os listados e em 'SALVAR' para salva-los como '.txt'.",
     "/arquivos/navigator": "Ajuda sobre Arquivos: Listar Arquivos. Nesta página selecione o diretório, ou coloque ele manualmente, ajuste a profundidade da busca (quanto maior mais gasto computacional), utilize o filtro para achar o que deseja, quando achar o que deseja, clique no globo e assim você abrirá no explorador de arquivos.",
     "/arquivos/extrair": "Ajuda sobre como extrair, primeiro coloque o arquivo gerado pelo Data Extration do CAD, após isso, defina o nome dos arquivos que serão gerados e clique em gerar csv para que eles sejam gerados, eles vão para a pasta Downloads",
+    "/arquivos/txt": "Ajuda sobre como transformar o TXT, primeiro coloque o arquivo txt no padrão estipulado, após isso, defina o nome do arquivo que sera gerado e clique em processar arquivo para que ele seja gerado, ele vai para a pasta Downloads",
 };
