@@ -17,6 +17,7 @@ pub fn rename_files_in_directory(
     // Compila a expressão regular para capturar todos os números no nome do arquivo
     let re = Regex::new(r"\d+").map_err(|_| "Falha ao compilar expressão regular.")?;
 
+
     // Percorre os arquivos no diretório
     let mut renamed_files = Vec::new();
     for entry in fs::read_dir(dir_path).map_err(|_| "Falha ao ler o diretório.")? {
@@ -30,6 +31,7 @@ pub fn rename_files_in_directory(
         if let Some(extension) = filename.rsplit('.').next() {
             if extensions.contains(&extension.to_lowercase()) {
                 let (name, ext) = filename.rsplit_once('.').unwrap();
+
 
                 // Coleta todos os números do nome do arquivo
                 let numbers: Vec<&str> = re.find_iter(name)
@@ -49,13 +51,15 @@ pub fn rename_files_in_directory(
                         new_name = new_name[..pos].to_string(); // Mantém o que está antes do último hífen
                     }
 
-                    // Cria o novo nome de arquivo
+
                     let new_filename = format!("{}.{}", new_name, ext);
                     let old_path = dir_path.join(&filename);
                     let new_path = dir_path.join(new_filename.clone());
 
                     // Renomeia o arquivo
+
                     fs::rename(old_path, new_path).map_err(|_| "Falha ao renomear o arquivo.")?;                        
+
                     renamed_files.push(format!(
                         "Renomeado: {} -> {}",
                         filename,
