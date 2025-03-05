@@ -5,3 +5,4 @@ pub mod set_window_size;
 pub mod set_fullscreen;
 pub mod file_manager;
 pub mod rename_final;
+pub mod rename_desc;
