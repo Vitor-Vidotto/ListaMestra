@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useState } from 'react';
+import GoBackButton from './GoBackButton';
 
 type DataRow = {
   Name?: string;
@@ -112,6 +113,9 @@ export default function ExtrairAberturas({ file }: ExcelProcessorProps) {
       >
         Gerar CSV
       </button>
+      <div className='pt-4'>
+      <GoBackButton />
+      </div>
     </div>
   );
 }
