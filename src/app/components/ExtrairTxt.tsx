@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
+import GoBackButton from './GoBackButton';
 
 const roundUpToMultiple = (value: number, multiple = 5) => {
   return Math.ceil(value / multiple) * multiple;
@@ -77,6 +78,7 @@ const ProcessFile = () => {
         Processar Arquivo
       </button>
       {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
+      <GoBackButton />
     </div>
   );
 };
