@@ -12,12 +12,13 @@ type DataRow = {
   'End Y'?: number;
   Angle?: number;
 };
+
 type ExcelProcessorProps = {
   file: File | null;
 };
-export default function ExtrairParedes({ file }: ExcelProcessorProps){
-  const [fileName, setFileName] = useState('');
 
+export default function ExtrairParedes({ file }: ExcelProcessorProps) {
+  const [fileName, setFileName] = useState('');
 
   const processExcelFile = async () => {
     if (!file) {
@@ -34,9 +35,8 @@ export default function ExtrairParedes({ file }: ExcelProcessorProps){
         const worksheet = workbook.Sheets[sheetName];
         const jsonData: DataRow[] = XLSX.utils.sheet_to_json(worksheet);
 
-        // Filtrando os dados
+        // Filtrando os dados com pelo menos 3 valores preenchidos entre os campos analisados
         const filteredData = jsonData.filter((row) => {
-          // Condição para garantir que pelo menos 2 colunas entre 'Start X', 'End X', 'Start Y', 'End Y' e 'Angle' estão preenchidas
           const validFields = [
             row['Start X'],
             row['End X'],
@@ -44,29 +44,39 @@ export default function ExtrairParedes({ file }: ExcelProcessorProps){
             row['End Y'],
             row['Angle'],
           ];
-          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value) !== '');
-
-          return filledValues.length >= 2;
+          const filledValues = validFields.filter(
+            (value) =>
+              value !== undefined &&
+              value !== null &&
+              String(value).trim() !== ''
+          );
+          return filledValues.length >= 3;
         });
 
-        // Definindo as colunas desejadas
         const desiredColumns = ['Layer', 'Start X', 'End X', 'Start Y', 'End Y', 'Angle'];
-        const formattedData = filteredData.map((row) => {
-          const newRow: any = {};
-          desiredColumns.forEach((col) => (newRow[col] = row[col as keyof DataRow]));
-          return newRow;
-        });
+
+        const formattedData = filteredData
+          .map((row) => {
+            const newRow: any = {};
+            desiredColumns.forEach((col) => {
+              newRow[col] = row[col as keyof DataRow] ?? '';
+            });
+            return newRow;
+          })
+          .filter((row) => {
+            // Certificando-se de que pelo menos 3 colunas estão preenchidas na linha formatada
+            const filledCount = desiredColumns.filter(col => row[col] !== '').length;
+            return filledCount >= 3;
+          });
 
         if (formattedData.length === 0) {
           alert('Nenhum dado válido encontrado para exportação.');
           return;
         }
 
-        // Convertendo para CSV
         const ws = XLSX.utils.json_to_sheet(formattedData);
         const csvData = XLSX.utils.sheet_to_csv(ws);
 
-        // Salvando o arquivo CSV com o nome escolhido
         const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
         saveAs(blob, fileName.endsWith('.csv') ? fileName : `${fileName}.csv`);
 
@@ -76,6 +86,7 @@ export default function ExtrairParedes({ file }: ExcelProcessorProps){
         alert('Ocorreu um erro ao processar o arquivo. Verifique se o formato está correto.');
       }
     };
+
     reader.readAsArrayBuffer(file);
   };
 
