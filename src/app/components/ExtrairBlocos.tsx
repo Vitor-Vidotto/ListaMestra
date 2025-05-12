@@ -37,7 +37,7 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
 
         // Filtrando os dados
         const filteredData = jsonData.filter(row => {
-          if (!row.Name || !/Line|AL_Bloco|14X19X44/.test(row.Name.trim())) return false;
+          if (!row.Name || !/Line|AL_Bloco|14X19X44|14X19X14|14X19X29|14X19X4/.test(row.Name.trim())) return false;
           
           const validFields = [
             row["Position X"], 
