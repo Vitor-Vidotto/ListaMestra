@@ -92,7 +92,7 @@ export default function ExtrairEixos({ file }: ExcelProcessorProps) {
 
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-2">Extrair Eixos/Paredes</h2>
+      <h2 className="text-lg font-bold mb-2">Extrair Eixos & Paredes</h2>
       <input
         type="text"
         value={fileName}
