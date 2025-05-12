@@ -12,6 +12,7 @@ type DataRow = {
   Rotation?: number;
   "Scale X"?: number;
 };
+
 type ExcelProcessorProps = {
   file: File | null;
 };
@@ -38,8 +39,14 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
         const filteredData = jsonData.filter(row => {
           if (!row.Name || !/Line|AL_Bloco|14X19X44/.test(row.Name.trim())) return false;
           
-          const validFields = [row["Position X"], row["Position Y"], row["Position Z"], row.Rotation, row["Scale X"]];
-          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value) !== '');
+          const validFields = [
+            row["Position X"], 
+            row["Position Y"], 
+            row["Position Z"], 
+            row.Rotation, 
+            row["Scale X"]
+          ];
+          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value).trim() !== '');
           return filledValues.length >= 2;
         });
 
@@ -47,17 +54,25 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
         const desiredColumns = ['Name', 'Position X', 'Position Y', 'Position Z', 'Rotation', 'Scale X'];
         const formattedData = filteredData.map(row => {
           const newRow: any = {};
-          desiredColumns.forEach(col => newRow[col] = row[col as keyof DataRow]);
+          desiredColumns.forEach(col => {
+            // Atribui apenas valores válidos, caso contrário, coloca um valor vazio
+            newRow[col] = row[col as keyof DataRow] ?? '';
+          });
           return newRow;
         });
 
-        if (formattedData.length === 0) {
+        // Remover linhas com valores vazios em todas as colunas
+        const cleanedData = formattedData.filter(row => {
+          return Object.values(row).some(value => value !== '');
+        });
+
+        if (cleanedData.length === 0) {
           alert('Nenhum dado válido encontrado para exportação.');
           return;
         }
 
         // Convertendo para CSV
-        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const ws = XLSX.utils.json_to_sheet(cleanedData);
         const csvData = XLSX.utils.sheet_to_csv(ws);
 
         // Salvando o arquivo CSV com o nome escolhido
