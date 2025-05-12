@@ -7,6 +7,7 @@ import ExtrairParedes from "@/app/components/ExtrairParedes";
 import ExtrairAberturas from "@/app/components/ExtrairAberturas";
 import FileUploader from "@/app/components/FileUploader";
 import { useState } from "react";
+import ExtrairEixos from "@/app/components/ExtrairEixos";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -20,7 +21,7 @@ export default function Home() {
         <ExtrairBlocos file={file} />
         <ExtrairParedes file={file} />
         <ExtrairAberturas file={file} />
-        
+        <ExtrairEixos file={file} />
       </div>
       </main>
     </div>

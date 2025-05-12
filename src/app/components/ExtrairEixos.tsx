@@ -5,19 +5,19 @@ import { saveAs } from 'file-saver';
 import { useState } from 'react';
 
 type DataRow = {
-  Layer?: string;
-  'Start X'?: number;
-  'End X'?: number;
-  'Start Y'?: number;
-  'End Y'?: number;
-  Angle?: number;
+  Name?: string;
+  "Position X"?: number;
+  "Position Y"?: number;
+  Rotation?: number;
+  "Scale X"?: number;
+  "Scale Y"?: number;
 };
 
 type ExcelProcessorProps = {
   file: File | null;
 };
 
-export default function ExtrairEixos({ file }: ExcelProcessorProps) {
+export default function ExtrairFerros({ file }: ExcelProcessorProps)  {
   const [fileName, setFileName] = useState('');
 
   const processExcelFile = async () => {
@@ -35,48 +35,45 @@ export default function ExtrairEixos({ file }: ExcelProcessorProps) {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData: DataRow[] = XLSX.utils.sheet_to_json(worksheet);
 
-        // Filtrando os dados com pelo menos 3 valores preenchidos entre os campos analisados
-        const filteredData = jsonData.filter((row) => {
+        // Filtrando os dados
+        const filteredData = jsonData.filter(row => {          
           const validFields = [
-            row['Start X'],
-            row['End X'],
-            row['Start Y'],
-            row['End Y'],
-            row['Angle'],
+            row["Position X"], 
+            row["Position Y"], 
+            row.Rotation, 
+            row["Scale X"],
+            row["Scale Y"]
           ];
-          const filledValues = validFields.filter(
-            (value) =>
-              value !== undefined &&
-              value !== null &&
-              String(value).trim() !== ''
-          );
+          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value).trim() !== '');
           return filledValues.length >= 3;
         });
 
-        const desiredColumns = ['Layer', 'Start X', 'End X', 'Start Y', 'End Y', 'Angle'];
-
-        const formattedData = filteredData
-          .map((row) => {
-            const newRow: any = {};
-            desiredColumns.forEach((col) => {
-              newRow[col] = row[col as keyof DataRow] ?? '';
-            });
-            return newRow;
-          })
-          .filter((row) => {
-            // Certificando-se de que pelo menos 3 colunas estão preenchidas na linha formatada
-            const filledCount = desiredColumns.filter(col => row[col] !== '').length;
-            return filledCount >= 3;
+        // Definindo as colunas desejadas
+        const desiredColumns = ['Name', 'Position X', 'Position Y', 'Scale X', "Scale Y",'Rotation'];
+        const formattedData = filteredData.map(row => {
+          const newRow: any = {};
+          desiredColumns.forEach(col => {
+            // Atribui apenas valores válidos, caso contrário, coloca um valor vazio
+            newRow[col] = row[col as keyof DataRow] ?? '';
           });
+          return newRow;
+        });
 
-        if (formattedData.length === 0) {
+        // Remover linhas com valores vazios em todas as colunas
+        const cleanedData = formattedData.filter(row => {
+          return Object.values(row).some(value => value !== '');
+        });
+
+        if (cleanedData.length === 0) {
           alert('Nenhum dado válido encontrado para exportação.');
           return;
         }
 
-        const ws = XLSX.utils.json_to_sheet(formattedData);
+        // Convertendo para CSV
+        const ws = XLSX.utils.json_to_sheet(cleanedData);
         const csvData = XLSX.utils.sheet_to_csv(ws);
 
+        // Salvando o arquivo CSV com o nome escolhido
         const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
         saveAs(blob, fileName.endsWith('.csv') ? fileName : `${fileName}.csv`);
 
@@ -86,13 +83,12 @@ export default function ExtrairEixos({ file }: ExcelProcessorProps) {
         alert('Ocorreu um erro ao processar o arquivo. Verifique se o formato está correto.');
       }
     };
-
     reader.readAsArrayBuffer(file);
   };
 
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-2">Extrair Eixos/Paredes</h2>
+      <h2 className="text-lg font-bold mb-2">Extrair Ferros</h2>
       <input
         type="text"
         value={fileName}
