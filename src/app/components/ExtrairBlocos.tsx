@@ -35,10 +35,17 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData: DataRow[] = XLSX.utils.sheet_to_json(worksheet);
 
+        const patterns = [
+          /Line/,
+          /AL_Bloco/,
+          /BL-?14x19x(?:39|54|34|19|04|09)/i,
+          /14x19x(?:44|14|29|4|39|34|59|53|19)/i
+        ];
         // Filtrando os dados
         const filteredData = jsonData.filter(row => {
-          if (!row.Name || !/Line|AL_Bloco|BL14x19x39|BL-14x19x54|BL-14x19x34|BL-14x19x19|BL-14x19x04|BL-14x19x09|14X19X44|14X19X14|14X19X29|14X19X4/.test(row.Name.trim())) return false;
-          
+          const name = row.Name?.trim();
+          if (!name || !patterns.some(regex => regex.test(name))) return false;
+        
           const validFields = [
             row["Position X"], 
             row["Position Y"], 
@@ -46,7 +53,11 @@ export default function ExtrairBlocos({ file }: ExcelProcessorProps)  {
             row.Rotation, 
             row["Scale X"]
           ];
-          const filledValues = validFields.filter(value => value !== undefined && value !== null && String(value).trim() !== '');
+        
+          const filledValues = validFields.filter(
+            value => value !== undefined && value !== null && String(value).trim() !== ''
+          );
+        
           return filledValues.length >= 2;
         });
 
