@@ -3,19 +3,17 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const appLinks = [
-  { title: "Renomeadores", path: "/renomeadores", imageUrl: "/images/simuladores.png" },
-  { title: "Arquivos", path: "/arquivos", imageUrl: "/images/simuladores.png" },
-  { title: "Calculos", path: "/calculos", imageUrl: "/images/simuladores.png" },
-  { title: "Compiladores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
-  { title: "Analisadores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
-  { title: "Simuladores", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Calculo de Arranque", path: "/calculos/arranque", imageUrl: "/images/simuladores.png" },
+  { title: "Navegador", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Extrator", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Txt Argamassa", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
 ];
 
-const AppLinksGrid = () => {
+const CalcLinkGrid = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <nav className="w-full text-center p-8">
-      <h1 className="text-3xl font-bold mb-4">Lista Mestra</h1>
+      <h1 className="text-3xl font-bold mb-4">Arquivos</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8 mx-auto" style={{ width: '600px'}}>
           {appLinks.map((app, index) => (
             <Link
@@ -37,4 +35,4 @@ const AppLinksGrid = () => {
 
 
 
-export default AppLinksGrid;
+export default CalcLinkGrid;
