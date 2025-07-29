@@ -4,9 +4,9 @@ import React, { useState } from "react";
 
 const appLinks = [
   { title: "Calculo de Arranque", path: "/calculos/arranque", imageUrl: "/images/simuladores.png" },
-  { title: "Navegador", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
-  { title: "Extrator", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
-  { title: "Txt Argamassa", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Indisponível", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Indisponível", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
+  { title: "Indisponível", path: "/indisponivel", imageUrl: "/images/simuladores.png" },
 ];
 
 const CalcLinkGrid = () => {
