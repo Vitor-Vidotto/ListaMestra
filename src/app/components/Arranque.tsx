@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import GoBackButton from "./GoBackButton";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const ArranqueCalculator: React.FC = () => {
   const [alturaViga, setAlturaViga] = useState<number>(0);
@@ -92,6 +94,22 @@ const ArranqueCalculator: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const exportToExcel = () => {
+    if (resultadosTabela.length === 0) return;
+  
+    // Cria uma nova planilha a partir dos resultados
+    const worksheet = XLSX.utils.json_to_sheet(resultadosTabela);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Arranque");
+  
+    // Converte para binário
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  
+    // Salva o arquivo
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "arranque.xlsx");
+  };
+  
   return (
     <div className="flex items-center justify-center bg-gray-100 p-8">
       <div className="max-w-4xl w-full bg-white shadow-xl rounded-lg p-8">
@@ -227,42 +245,50 @@ const ArranqueCalculator: React.FC = () => {
         <GoBackButton />
 
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-3xl w-full shadow-lg overflow-x-auto">
-              <h4 className="text-xl font-semibold mb-4 text-center">Tabela Final</h4>
-              <table className="w-full border-collapse border border-gray-400 text-sm">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-400 px-2 py-1">Bitola (mm)</th>
-                    <th className="border border-gray-400 px-2 py-1">Quantidade</th>
-                    <th className="border border-gray-400 px-2 py-1">Comprimento Total (m)</th>
-                    <th className="border border-gray-400 px-2 py-1">Peso Total + Perda(Kg)</th>
-                    <th className="border border-gray-400 px-2 py-1">Volume Graute (m³)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {resultadosTabela.map((row, i) => (
-                    <tr key={i}>
-                      <td className="border border-gray-400 px-2 py-1">{row.bitola}</td>
-                      <td className="border border-gray-400 px-2 py-1">{row.quantidade}</td>
-                      <td className="border border-gray-400 px-2 py-1">{row.comprimentoTotal}</td>
-                      <td className="border border-gray-400 px-2 py-1">{row.pesoTotal}</td>
-                      <td className="border border-gray-400 px-2 py-1">{row.volumeGraute}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                >
-                  Fechar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 max-w-3xl w-full shadow-lg overflow-x-auto">
+      <h4 className="text-xl font-semibold mb-4 text-center">Tabela Final</h4>
+      <table className="w-full border-collapse border border-gray-400 text-sm">
+        <thead>
+          <tr>
+            <th className="border border-gray-400 px-2 py-1">Bitola (mm)</th>
+            <th className="border border-gray-400 px-2 py-1">Quantidade</th>
+            <th className="border border-gray-400 px-2 py-1">Comprimento Total (m)</th>
+            <th className="border border-gray-400 px-2 py-1">Peso Total + Perda(Kg)</th>
+            <th className="border border-gray-400 px-2 py-1">Volume Graute (m³)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {resultadosTabela.map((row, i) => (
+            <tr key={i}>
+              <td className="border border-gray-400 px-2 py-1">{row.bitola}</td>
+              <td className="border border-gray-400 px-2 py-1">{row.quantidade}</td>
+              <td className="border border-gray-400 px-2 py-1">{row.comprimentoTotal}</td>
+              <td className="border border-gray-400 px-2 py-1">{row.pesoTotal}</td>
+              <td className="border border-gray-400 px-2 py-1">{row.volumeGraute}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+        >
+          Fechar
+        </button>
+
+        <button
+          onClick={exportToExcel}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Salvar Planilha
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
