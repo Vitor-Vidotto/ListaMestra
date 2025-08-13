@@ -10,16 +10,35 @@ const ArranqueCalculator: React.FC = () => {
   const [transpasse1, setTranspasse1] = useState<number>(0);
   const [transpasse2, setTranspasse2] = useState<number>(0);
   const [transpasse3, setTranspasse3] = useState<number>(0);
-  const [diametro, setDiametro] = useState<number>(10.0);
-  const [espessuraLaje, setEspessuraLaje] = useState<number>(0); // em cm
+  const [espessuraLaje, setEspessuraLaje] = useState<number>(0);
   const [tipoBloco, setTipoBloco] = useState<string>("14x19x29");
   const [desperdicio, setDesperdicio] = useState<number>(0);
-  const [resultados, setResultados] = useState<any | null>(null);
+
+  // Quantidade de grautes por bitola
+  const [quantidades, setQuantidades] = useState<{ [key: string]: number }>({
+    "0": 0,
+    "10.0": 0,
+    "12.5": 0,
+    "16.0": 0,
+  });
+
+  const [resultadosTabela, setResultadosTabela] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
- const calcular = () => {
+  const fatoresPeso: { [key: string]: number } = {
+    "10.0": 0.617,
+    "12.5": 0.963,
+    "16.0": 1.578,
+  };
+
+  const secoesFuro: { [key: string]: number } = {
+    "14x19x29": 0.09 * 0.09,
+    "19x19x39": 0.14 * 0.14,
+  };
+
+  const calcular = () => {
     if (alturaViga <= 0 || entrepiso <= 0) {
-      alert("Por favor, preencha todos os campos obrigatórios com valores válidos.");
+      alert("Preencha todos os campos obrigatórios com valores válidos.");
       return;
     }
 
@@ -27,46 +46,49 @@ const ArranqueCalculator: React.FC = () => {
     const ferroEmbutido = alturaViga - 5;
     const arranque = ferroEmbutido + dobra + transpasse1;
     const ferro1 = fiadaIntermediaria + transpasse2;
-    const ferro2 = (entrepiso - fiadaIntermediaria) + transpasse3;
+    const ferro2 = entrepiso - fiadaIntermediaria + transpasse3;
     const comprimentoTotal = arranque + ferro1 + ferro2;
-
-    // Conversão para metros
     const comprimentoEmMetros = comprimentoTotal / 100;
 
-    // Fatores de peso por metro
-    const fatoresPeso: { [key: number]: number } = {
-      10.0: 0.617,
-      12.5: 0.963,
-      16.0: 1.578,
-    };
-
     const espessuraEmMetros = espessuraLaje / 100;
-const entrepisoEmMetros = entrepiso / 100;
-const alturaUtil = entrepisoEmMetros - espessuraEmMetros;
+    const entrepisoEmMetros = entrepiso / 100;
+    const alturaUtil = entrepisoEmMetros - espessuraEmMetros;
 
-const secoesFuro: { [key: string]: number } = {
-  "14x19x29": 0.09 * 0.09,
-  "19x19x39": 0.14 * 0.14,
-};
+    const secaoFuro = secoesFuro[tipoBloco];
+    const volumeGrauteUnitario = alturaUtil * secaoFuro;
 
-const secaoFuro = secoesFuro[tipoBloco];
-const volumeGraute = alturaUtil * secaoFuro;
+    let tabela: any[] = [];
+    let volumeTotal = 0;
 
-    const fator = fatoresPeso[diametro];
-    const pesoBase = comprimentoEmMetros * fator;
-    const pesoFinal = pesoBase * (1 + desperdicio / 100);
+    Object.entries(quantidades).forEach(([bitola, qtd]) => {
+      if (qtd > 0) {
+        let pesoFinal: string | number = "/";
+        if (bitola !== "0") {
+          const pesoBase = comprimentoEmMetros * fatoresPeso[bitola];
+          pesoFinal = (pesoBase * qtd * (1 + desperdicio / 100)).toFixed(2);
+        }
+        const volumeTotalBitola = volumeGrauteUnitario * qtd;
+        volumeTotal += volumeTotalBitola;
 
-    setResultados({
-      fiadaIntermediaria,
-      ferroEmbutido,
-      arranque,
-      ferro1,
-      ferro2,
-      comprimentoTotal,
-      pesoTotal: pesoFinal,
-      volumeGraute,
+        tabela.push({
+          bitola,
+          quantidade: qtd,
+          comprimentoTotal: (comprimentoEmMetros * qtd).toFixed(2),
+          pesoTotal: pesoFinal,
+          volumeGraute: volumeTotalBitola.toFixed(2),
+        });
+      }
     });
 
+    tabela.push({
+      bitola: "TOTAL",
+      quantidade: "",
+      comprimentoTotal: "",
+      pesoTotal: "",
+      volumeGraute: volumeTotal.toFixed(2),
+    });
+
+    setResultadosTabela(tabela);
     setIsModalOpen(true);
   };
 
@@ -87,7 +109,6 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
             <label className="block font-medium text-black">Dobra do Arranque (cm):</label>
             <input
@@ -97,7 +118,6 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
             <label className="block font-medium text-black">Entrepiso (cm):</label>
             <input
@@ -107,9 +127,8 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
-            <label className="block font-medium text-black">Fiada Intermediária (quantidade):</label>
+            <label className="block font-medium text-black">Fiada Intermediária (qtd):</label>
             <input
               type="number"
               value={fiadaInput}
@@ -117,7 +136,6 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
             <label className="block font-medium text-black">1º Transpasse (cm):</label>
             <input
@@ -127,7 +145,6 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
             <label className="block font-medium text-black">2º Transpasse (cm):</label>
             <input
@@ -137,7 +154,6 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-
           <div>
             <label className="block font-medium text-black">3º Transpasse (cm):</label>
             <input
@@ -147,24 +163,8 @@ const volumeGraute = alturaUtil * secaoFuro;
               className="w-full p-2 border rounded text-black"
             />
           </div>
-        </div>
-
-           <div>
-            <label className="block font-medium text-black">Diâmetro do Aço (mm):</label>
-            <select
-              value={diametro}
-              onChange={(e) => setDiametro(Number(e.target.value))}
-              className="w-full p-2 border rounded text-black"
-            >
-              <option value={10.0}>10.0</option>
-              <option value={12.5}>12.5</option>
-              <option value={16.0}>16.0</option>
-            </select>
-          </div>
-
-          {/* Input de desperdício */}
           <div>
-            <label className="block font-medium text-black">Porcentagem de Desperdício (%):</label>
+            <label className="block font-medium text-black">Porcentagem de Perda(%):</label>
             <input
               type="number"
               value={desperdicio}
@@ -175,27 +175,45 @@ const volumeGraute = alturaUtil * secaoFuro;
             />
           </div>
           <div>
-  <label className="block font-medium text-black">Espessura da Laje (cm):</label>
-  <input
-    type="number"
-    value={espessuraLaje}
-    onChange={(e) => setEspessuraLaje(Number(e.target.value))}
-    className="w-full p-2 border rounded text-black"
-  />
-</div>
+            <label className="block font-medium text-black">Espessura da Laje (cm):</label>
+            <input
+              type="number"
+              value={espessuraLaje}
+              onChange={(e) => setEspessuraLaje(Number(e.target.value))}
+              className="w-full p-2 border rounded text-black"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-black">Tipo de Bloco:</label>
+            <select
+              value={tipoBloco}
+              onChange={(e) => setTipoBloco(e.target.value)}
+              className="w-full p-2 border rounded text-black"
+            >
+              <option value="14x19x29">14x19x29</option>
+              <option value="19x19x39">19x19x39</option>
+            </select>
+          </div>
+        </div>
 
-<div>
-  <label className="block font-medium text-black">Tipo de Bloco:</label>
-  <select
-    value={tipoBloco}
-    onChange={(e) => setTipoBloco(e.target.value)}
-    className="w-full p-2 border rounded text-black"
-  >
-    <option value="14x19x29">14x19x29</option>
-    <option value="19x19x39">19x19x39</option>
-  </select>
-</div>
-
+        <div className="mt-4">
+          <h4 className="font-semibold text-black mb-2">Quantidade de Grautes por Bitola</h4>
+          {Object.keys(quantidades).map((bitola) => (
+            <div key={bitola} className="mb-2">
+              <label className="block font-medium text-black">
+                Bitola {bitola} mm:
+              </label>
+              <input
+                type="number"
+                value={quantidades[bitola]}
+                onChange={(e) =>
+                  setQuantidades({ ...quantidades, [bitola]: Number(e.target.value) })
+                }
+                className="w-full p-2 border rounded text-black"
+              />
+            </div>
+          ))}
+        </div>
 
         <div className="mt-6 flex justify-center">
           <button
@@ -208,20 +226,32 @@ const volumeGraute = alturaUtil * secaoFuro;
 
         <GoBackButton />
 
-        {isModalOpen && resultados && (
+        {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-xl w-full shadow-lg">
-              <h4 className="text-xl font-semibold mb-4 text-center">Resultados</h4>
-              <ul className="text-gray-800 space-y-1 text-sm">
-                <li><strong>Ferro Embutido:</strong> {resultados.ferroEmbutido} cm</li>
-                <li><strong>Fiada Intermediária:</strong> {resultados.fiadaIntermediaria} cm</li>
-                <li><strong>Arranque:</strong> {resultados.arranque} cm</li>
-                <li><strong>Ferro 1:</strong> {resultados.ferro1} cm</li>
-                <li><strong>Ferro 2:</strong> {resultados.ferro2} cm</li>
-                <li><strong>Comprimento Total do Ferro:</strong> {resultados.comprimentoTotal} cm</li>
-                <li><strong>Peso Total do Ferro:</strong> {resultados.pesoTotal} KG</li>
-                <li><strong>Volume de Graute:</strong> {resultados.volumeGraute.toFixed(4)} m³</li>
-              </ul>
+            <div className="bg-white rounded-lg p-6 max-w-3xl w-full shadow-lg overflow-x-auto">
+              <h4 className="text-xl font-semibold mb-4 text-center">Tabela Final</h4>
+              <table className="w-full border-collapse border border-gray-400 text-sm">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-400 px-2 py-1">Bitola (mm)</th>
+                    <th className="border border-gray-400 px-2 py-1">Quantidade</th>
+                    <th className="border border-gray-400 px-2 py-1">Comprimento Total (m)</th>
+                    <th className="border border-gray-400 px-2 py-1">Peso Total + Perda(Kg)</th>
+                    <th className="border border-gray-400 px-2 py-1">Volume Graute (m³)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultadosTabela.map((row, i) => (
+                    <tr key={i}>
+                      <td className="border border-gray-400 px-2 py-1">{row.bitola}</td>
+                      <td className="border border-gray-400 px-2 py-1">{row.quantidade}</td>
+                      <td className="border border-gray-400 px-2 py-1">{row.comprimentoTotal}</td>
+                      <td className="border border-gray-400 px-2 py-1">{row.pesoTotal}</td>
+                      <td className="border border-gray-400 px-2 py-1">{row.volumeGraute}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={() => setIsModalOpen(false)}
