@@ -13,7 +13,7 @@ const CalcLinkGrid = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <nav className="w-full text-center p-8">
-      <h1 className="text-3xl font-bold mb-4">Arquivos</h1>
+      <h1 className="text-3xl font-bold mb-4">Calculos</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8 mx-auto" style={{ width: '600px'}}>
           {appLinks.map((app, index) => (
             <Link
